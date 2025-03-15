@@ -36,8 +36,7 @@ export default function Admin({ initialValues = {} }) {
     console.log("Submitting week data:", formData);
 
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const baseUrl = "deafparish.ge";
       const res = await fetch(`${baseUrl}/api/main_database`, {
         method: "POST",
         body: JSON.stringify(formData),
