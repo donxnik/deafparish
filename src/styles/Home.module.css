@@ -1,0 +1,575 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: url(../images/kedeli.jpg) no-repeat center center fixed;
+  background-size: cover;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Angel overlay container */
+.angelOverlay {
+  position: absolute; /* Change from fixed to absolute */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Left angel */
+.leftAngel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32%;
+  height: 100%;
+  background-image: url(../images/angel.png);
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size: contain;
+}
+
+/* Right angel */
+.rightAngel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32%;
+  height: 100%;
+  background-image: url(../images/angel2.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: contain;
+}
+
+/* Content wrapper to ensure content is above background */
+.contentWrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7); /* 70% opacity white */
+  border-radius: 12px;
+  margin: 0; /* Remove margins to extend to edges */
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Common styles */
+.fontMontserrat {
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.centeredImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* Add this */
+  z-index: 2; /* Ensure images appear above angels */
+}
+
+.rounded_image {
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styles */
+.headerTitle {
+  content: url(../images/titleLogo2.png);
+  width: 60%;
+}
+
+.headerImg {
+  margin: 50px auto;
+  width: 80%;
+  max-width: 1200px;
+  display: block;
+  position: relative;
+}
+
+/* Calendar section */
+.week_calendar {
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+  gap: 35px;
+  flex-wrap: wrap;
+  width: 1200px;
+  justify-content: center;
+}
+
+.week_day {
+  margin: 15px;
+  color: black;
+  padding: 10px;
+  text-align: center;
+}
+
+.week_day h1 {
+  font-size: 38px;
+  font-weight: 600;
+  margin: 0 auto;
+}
+
+.week_day h3 {
+  font-size: 34px;
+  color: #ee0022;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.week_day p {
+  font-size: 24px;
+  font-weight: 400;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.week_day:hover {
+  background-color: #7fc540;
+  transition: all 1s;
+}
+
+/* Auditorium section */
+.auditorium {
+  background-color: #f8f5f0;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  margin: 100px auto;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.auditorium_image {
+  flex: 1;
+  max-width: 580px;
+}
+
+.auditorium_desc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.auditorium h1 {
+  color: #333;
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  position: relative;
+}
+
+.auditorium h1:after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background-color: #7fc540;
+  bottom: -10px;
+  left: 0;
+}
+
+.auditorium p {
+  color: #555;
+  margin-top: 25px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* Contact section */
+.contact_container {
+  padding: 80px 0;
+  margin-top: 50px;
+  background-color: transparent; /* Remove the different background color */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.contact_title {
+  margin-bottom: 50px;
+}
+
+.contact_title h1 {
+  color: #333;
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.contact_title p {
+  color: #666;
+  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sub_contact_container {
+  margin-top: 40px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.sub_contact_img {
+  position: relative;
+  width: 45%;
+  min-height: 350px;
+  background-color: #e8e8e8;
+}
+
+.sub_contact_desc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+  width: 55%;
+}
+
+.contact_info_item {
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.contact_label {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.contact_value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.sub_desc {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Button styles */
+.btn_maps,
+.btn_facebook {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  height: 48px;
+  text-align: center;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn_maps {
+  background-color: white; /* Change background to white for better contrast */
+  border: 2px solid #4285f4; /* Add a border for better contrast */
+}
+
+.btn_facebook {
+  background-color: #3b5998;
+}
+
+.btn_maps:hover,
+.btn_facebook:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.greenLine {
+  background-color: #7fc540;
+  width: 100%;
+  padding: 40px 0;
+  margin-top: 20px;
+}
+
+/* Google logo colors */
+.google_G {
+  color: #4285f4; /* Blue */
+}
+
+.google_O1 {
+  color: #ea4335; /* Red */
+}
+
+.google_O2 {
+  color: #fbbc05; /* Yellow */
+}
+
+.google_L {
+  color: #34a853; /* Green */
+}
+
+.google_E {
+  color: #ea4335; /* Red */
+}
+
+/* Maps text colors */
+.maps_M {
+  color: #4285f4; /* Blue */
+}
+
+.maps_A {
+  color: #ea4335; /* Red */
+}
+
+.maps_P {
+  color: #fbbc05; /* Yellow */
+}
+
+.maps_S {
+  color: #34a853; /* Green */
+}
+
+/* Daily info section */
+.daily_info {
+  padding: 200px 200px;
+  background: #fff;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: bold;
+  color: #d8ab7a;
+  box-shadow: inset #a2cc5b 0 0 0 5px, inset #b3d47e 0 0 0 1px,
+    inset #b5d67f 0 0 0 10px, inset #c5dd9f 0 0 0 11px, inset #cfe6b9 0 0 0 16px,
+    inset #d9e9c9 0 0 0 17px, inset #d6e8c6 0 0 0 21px, inset #e5f0e0 0 0 0 22px;
+  text-shadow: 3px 3px 1px #e8e8e8;
+  margin: 30px 0;
+  text-align: center;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.daily_text {
+  font-size: 34px;
+  line-height: 45px;
+  color: #333333;
+}
+
+/* Add these CSS styles to your Home.module.css file */
+
+.videoContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin: 50px auto;
+  width: 100%;
+  max-width: 2200px;
+  gap: 20px;
+}
+
+.videoBlock {
+  flex: 1;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.videoBlock:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.videoFrame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.videoDescription {
+  font-size: 18px;
+  color: #333;
+  margin-top: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Responsive styles for videos */
+@media (max-width: 900px) {
+  .videoContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .videoBlock {
+    flex: 0 0 calc(50% - 20px);
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .videoBlock {
+    flex: 0 0 100%;
+  }
+
+  .videoDescription {
+    font-size: 16px;
+  }
+}
+
+/* Tablet and Smaller Desktop */
+@media (min-width: 701px) and (max-width: 1120px) {
+  .headerTitle {
+    font-size: 24px;
+  }
+
+  .week_calendar {
+    width: unset;
+    flex-wrap: nowrap;
+  }
+
+  .week_day h1 {
+    border-bottom: 1px solid black;
+    padding-top: 5px;
+  }
+
+  .sub_contact_desc h1 {
+    font-size: 24px;
+  }
+
+  .daily_info {
+    padding: 150px 150px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .headerTitle {
+    font-size: 24px;
+    width: 80%;
+  }
+
+  .week_calendar {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+  }
+
+  .week_day {
+    width: calc(33.33% - 10px); /* Display 3 days per row */
+    margin: 5px;
+  }
+
+  .week_day h1 {
+    font-size: 24px;
+  }
+
+  .week_day h3 {
+    font-size: 24px;
+  }
+
+  .week_day p {
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .auditorium {
+    flex-direction: column;
+    padding: 30px 20px;
+    margin: 50px auto;
+  }
+
+  .auditorium_image {
+    max-width: 100%;
+    order: 1; /* Move image to top on mobile */
+  }
+
+  .auditorium_desc {
+    order: 2; /* Move description below image on mobile */
+    padding: 10px;
+  }
+
+  .auditorium h1 {
+    font-size: 28px;
+  }
+
+  .auditorium p {
+    font-size: 16px;
+  }
+
+  .sub_contact_container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .sub_contact_img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .sub_contact_desc {
+    width: 100%;
+    padding: 30px;
+  }
+
+  .sub_desc {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn_maps,
+  .btn_facebook {
+    width: 100%;
+  }
+
+  .daily_info {
+    padding: 100px 20px;
+    font-size: 20px;
+  }
+
+  .daily_text {
+    font-size: 26px;
+    line-height: 32px;
+  }
+}
+@media (max-width: 480px) {
+  .week_day {
+    width: calc(50% - 10px); /* Display 2 days per row on very small screens */
+  }
+}
