@@ -36,8 +36,9 @@ export default function Admin({ initialValues = {} }) {
     console.log("Submitting week data:", formData);
 
     try {
-      const baseUrl = "deafparish.ge";
-      const res = await fetch(`/api/main_database`, {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const res = await fetch(`${baseUrl}/api/main_database`, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {
@@ -136,10 +137,10 @@ export default function Admin({ initialValues = {} }) {
 
 export async function getServerSideProps() {
   try {
-    const baseUrl = "deafparish.ge";
-    console.log("Fetching from URL:", `deafparish.ge/api/main_database`);
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    console.log("Fetching from URL:", `${baseUrl}/api/main_database`);
 
-    const response = await fetch(`/api/main_database`);
+    const response = await fetch(`${baseUrl}/api/main_database`);
     const { data, error } = await response.json();
 
     if (!response.ok || error) {
