@@ -191,7 +191,7 @@ export default function Home({ weekData = [] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     console.log("Fetching from URL:", `${baseUrl}/api/main_database`);
@@ -204,21 +204,19 @@ export async function getStaticProps() {
     const result = await response.json();
     const weekData = Array.isArray(result.data) ? result.data : [];
 
-    console.log("Data fetched in getStaticProps:", { weekData });
+    console.log("Data fetched in getServerSideProps:", { weekData });
 
     return {
       props: {
         weekData,
       },
-      revalidate: 3600,
     };
   } catch (error) {
-    console.error("Error in getStaticProps:", error);
+    console.error("Error in getServerSideProps:", error);
     return {
       props: {
-        weekData: [], // Always return an array
+        weekData: [], // Fallback to empty array
       },
-      revalidate: 3600,
     };
   }
 }
