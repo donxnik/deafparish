@@ -136,7 +136,7 @@ export default function Admin({ initialValues = {} }) {
 
 export async function getServerSideProps() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = "deafparish.ge";
     console.log("Fetching from URL:", `${baseUrl}/api/main_database`);
 
     const response = await fetch(`${baseUrl}/api/main_database`);
