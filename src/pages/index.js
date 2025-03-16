@@ -17,8 +17,8 @@ function formatTextWithRedTime(text) {
   return <span dangerouslySetInnerHTML={{ __html: formattedText }} />;
 }
 
-export default function Home({ weekData = [] }) {
-  // Ensure weekData is an array and provide fallback if empty or invalid
+export default function Home({ data = {} }) {
+  const { weekData = [], auditoriumData = [] } = data;
   const safeWeekData = Array.isArray(weekData) ? weekData : [];
   const weekDays = safeWeekData[0] || {
     wk1: "",
@@ -28,6 +28,13 @@ export default function Home({ weekData = [] }) {
     wk5: "",
     wk6: "",
     wk7: "",
+  };
+  const safeAuditoriumData = Array.isArray(auditoriumData)
+    ? auditoriumData
+    : [];
+  const auditoriumInfo = safeAuditoriumData[0] || {
+    title: "სასწავლო აუდიტორია",
+    desc: "აუდიტორია გამოიყენება სხვადასხვა სახის შეხვედრებისთვის და ღონისძიებებისთვის.",
   };
 
   const dayNames = [
@@ -85,11 +92,8 @@ export default function Home({ weekData = [] }) {
               />
             </div>
             <div className={styles.auditorium_desc}>
-              <h1>სასწავლო აუდიტორია</h1>
-              <p>
-                აუდიტორია გამოიყენება სხვადასხვა სახის შეხვედრებისთვის და
-                ღონისძიებებისთვის.
-              </p>
+              <h1>{auditoriumInfo.title}</h1>
+              <p>{auditoriumInfo.desc}</p>
             </div>
           </div>
 
@@ -194,28 +198,29 @@ export default function Home({ weekData = [] }) {
 export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    console.log("Fetching from URL:", `${baseUrl}/api/main_database`);
-
     const response = await fetch(`${baseUrl}/api/main_database`);
+    const result = await response.json();
+    console.log("API response in Home:", result); // Add this
     if (!response.ok) {
       throw new Error(`API request failed with status: ${response.status}`);
     }
 
-    const result = await response.json();
-    const weekData = Array.isArray(result.data) ? result.data : [];
-
-    console.log("Data fetched in getServerSideProps:", { weekData });
-
     return {
       props: {
-        weekData,
+        data: {
+          weekData: result.data?.weekData || [],
+          auditoriumData: result.data?.auditoriumData || [],
+        },
       },
     };
   } catch (error) {
     console.error("Error in getServerSideProps:", error);
     return {
       props: {
-        weekData: [], // Fallback to empty array
+        data: {
+          weekData: [],
+          auditoriumData: [],
+        },
       },
     };
   }

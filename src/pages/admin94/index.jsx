@@ -3,13 +3,15 @@ import styles from "@/pages/admin94/admin.module.css";
 
 export default function Admin({ initialValues = {} }) {
   const [values, setValues] = useState({
-    wk1: initialValues.wk1 || "",
-    wk2: initialValues.wk2 || "",
-    wk3: initialValues.wk3 || "",
-    wk4: initialValues.wk4 || "",
-    wk5: initialValues.wk5 || "",
-    wk6: initialValues.wk6 || "",
-    wk7: initialValues.wk7 || "",
+    wk1: initialValues.weekData?.wk1 || "",
+    wk2: initialValues.weekData?.wk2 || "",
+    wk3: initialValues.weekData?.wk3 || "",
+    wk4: initialValues.weekData?.wk4 || "",
+    wk5: initialValues.weekData?.wk5 || "",
+    wk6: initialValues.weekData?.wk6 || "",
+    wk7: initialValues.weekData?.wk7 || "",
+    auditoriumTitle: initialValues.auditoriumData?.title || "",
+    auditoriumDesc: initialValues.auditoriumData?.desc || "",
   });
 
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -31,9 +33,9 @@ export default function Admin({ initialValues = {} }) {
       wk5: values.wk5 || "",
       wk6: values.wk6 || "",
       wk7: values.wk7 || "",
+      title: values.auditoriumTitle || "",
+      desc: values.auditoriumDesc || "",
     };
-
-    console.log("Submitting week data:", formData);
 
     try {
       const baseUrl =
@@ -46,32 +48,23 @@ export default function Admin({ initialValues = {} }) {
         },
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
 
       if (data.error) {
-        console.error(data.error);
         setMessage({
           text: "შეცდომა მონაცემების შენახვისას: " + data.error,
           type: "error",
         });
       } else {
-        console.log(data.message);
         setMessage({
-          text: "კვირის მონაცემები წარმატებით შეინახა!",
+          text: "მონაცემები წარმატებით შეინახა!",
           type: "success",
         });
-
-        // Clear message after 5 seconds
-        setTimeout(() => {
-          setMessage({ text: "", type: "" });
-        }, 5000);
+        setTimeout(() => setMessage({ text: "", type: "" }), 5000);
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
       setMessage({
         text: "შეცდომა მონაცემების შენახვისას: " + error.message,
         type: "error",
@@ -92,10 +85,7 @@ export default function Admin({ initialValues = {} }) {
   return (
     <div className={styles.bodyForm}>
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>კვირის განრიგის სამართავი პანელი</h1>
-        <p className={styles.form_subtitle}>
-          შეიყვანეთ თითოეული დღის განრიგის დეტალები
-        </p>
+        <h1 className={styles.title}>ადმინისტრაციული პანელი</h1>
 
         {message.text && (
           <div
@@ -110,6 +100,7 @@ export default function Admin({ initialValues = {} }) {
         )}
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <h2>კვირის განრიგი</h2>
           {dayNames.map((day) => (
             <div key={day.id} className={styles.input_field}>
               <label className={styles.day_label}>
@@ -126,6 +117,33 @@ export default function Admin({ initialValues = {} }) {
             </div>
           ))}
 
+          <h2>აუდიტორიის აღწერა</h2>
+          <div className={styles.input_field}>
+            <label className={styles.day_label}>
+              <span>სათაური</span>
+            </label>
+            <input
+              type="text"
+              className={styles.textarea}
+              name="auditoriumTitle"
+              value={values.auditoriumTitle}
+              onChange={handleChange}
+              placeholder="შეიყვანეთ აუდიტორიის სათაური..."
+            />
+          </div>
+          <div className={styles.input_field}>
+            <label className={styles.day_label}>
+              <span>აღწერა</span>
+            </label>
+            <textarea
+              className={styles.textarea}
+              name="auditoriumDesc"
+              value={values.auditoriumDesc}
+              onChange={handleChange}
+              placeholder="შეიყვანეთ აუდიტორიის აღწერა..."
+            />
+          </div>
+
           <div className={`${styles.input_field} ${styles.input_btn}`}>
             <input type="submit" value="დამახსოვრება" className={styles.btn} />
           </div>
@@ -138,22 +156,28 @@ export default function Admin({ initialValues = {} }) {
 export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    console.log("Fetching from URL:", `${baseUrl}/api/main_database`);
-
     const response = await fetch(`${baseUrl}/api/main_database`);
     const { data, error } = await response.json();
-
+    console.log("API response in Admin:", data, "Error:", error); // Add this
     if (!response.ok || error) {
-      console.error("Error fetching week data:", error || response.statusText);
       return {
         props: {
-          initialValues: {},
+          initialValues: {
+            weekData: {},
+            auditoriumData: {},
+          },
         },
       };
     }
 
-    const initialValues = data && data.length > 0 ? data[0] : {};
-    console.log("Initial values fetched:", initialValues);
+    const initialValues = {
+      weekData:
+        data.weekData && data.weekData.length > 0 ? data.weekData[0] : {},
+      auditoriumData:
+        data.auditoriumData && data.auditoriumData.length > 0
+          ? data.auditoriumData[0]
+          : {},
+    };
 
     return {
       props: {
@@ -164,7 +188,10 @@ export async function getServerSideProps() {
     console.error("Error in getServerSideProps:", error);
     return {
       props: {
-        initialValues: {},
+        initialValues: {
+          weekData: {},
+          auditoriumData: {},
+        },
       },
     };
   }
