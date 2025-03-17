@@ -257,7 +257,7 @@ export default function Home({ data = {} }) {
                   </a>
                   <a
                     className={styles.btn_facebook}
-                    href="#"
+                    href="https://www.facebook.com/deafparish"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
