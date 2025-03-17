@@ -3,7 +3,10 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import auditoriumIMG from "../images/auditorium.jpeg";
 import headerIMG from "../images/header_img.jpg";
+import interior1 from "../images/interior1.jpeg";
+import interior2 from "../images/interior2.jpeg";
 import mapSameba from "../images/map_sameba.jpg";
+import { useState, useEffect } from "react";
 
 function formatTextWithRedTime(text) {
   if (!text) return text;
@@ -18,6 +21,8 @@ function formatTextWithRedTime(text) {
 }
 
 export default function Home({ data = {} }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const images = [headerIMG, interior1, interior2];
   const { weekData = [], auditoriumData = [] } = data;
   const safeWeekData = Array.isArray(weekData) ? weekData : [];
   const weekDays = safeWeekData[0] || {
@@ -47,6 +52,30 @@ export default function Home({ data = {} }) {
     "კვირა",
   ];
 
+  // Auto-advance slides
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
+    }, 8000);
+
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  // Navigation functions
+  const nextSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prevSlide) => (prevSlide - 1 + images.length) % images.length
+    );
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
     <>
       <Head>
@@ -63,14 +92,43 @@ export default function Home({ data = {} }) {
         </div>
         <div className={styles.contentWrapper}>
           <div className={styles.headerTitle}>ივერიის ღვთისმშობლის ლავრა</div>
-          <div className={styles.headerImg}>
-            <Image
-              src={headerIMG}
-              alt="header"
-              layout="responsive"
-              priority
-              className={styles.centeredImage}
-            />
+          <div className={styles.slideshow}>
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className={`${styles.slide} ${
+                  index === currentSlide ? styles.active : ""
+                }`}
+              >
+                <Image
+                  src={image}
+                  alt={`header slide ${index + 1}`}
+                  className={styles.centeredImage}
+                  width={1200}
+                  height={600}
+                  priority={index === 0}
+                  quality={75}
+                />
+              </div>
+            ))}
+            {/* Remove these two divs */}
+            {/* <div className={styles.prev} onClick={prevSlide}>
+    &#10094;
+  </div>
+  <div className={styles.next} onClick={nextSlide}>
+    &#10095;
+  </div> */}
+            <div className={styles.dotsContainer}>
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`${styles.dot} ${
+                    index === currentSlide ? styles.active : ""
+                  }`}
+                  onClick={() => goToSlide(index)}
+                ></div>
+              ))}
+            </div>
           </div>
           <div className={styles.week_calendar}>
             {dayNames.map((day, index) => (

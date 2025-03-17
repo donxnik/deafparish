@@ -75,12 +75,13 @@
 
 .centeredImage {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: contain; /* Use contain to preserve the image's aspect ratio */
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative; /* Add this */
-  z-index: 2; /* Ensure images appear above angels */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .rounded_image {
@@ -94,10 +95,61 @@
   width: 60%;
 }
 
+/* Slideshow container */
+.slideshow {
+  position: relative;
+  width: 100%;
+  height: 1000px; /* Match the image height */
+  overflow: hidden;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Hide images by default */
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 1;
+}
+
+/* Show active slide */
+.slide.active {
+  opacity: 1;
+}
+
+/* Navigation dots container */
+.dotsContainer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  z-index: 2;
+}
+
+/* Individual dots */
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Active dot */
+.dot.active {
+  background-color: white;
+}
+
 .headerImg {
   margin: 50px auto;
-  width: 80%;
-  max-width: 1200px;
+  width: 90%;
+  max-width: 1000px; /* Match the image width */
   display: block;
   position: relative;
 }
@@ -541,12 +593,20 @@
 
 /* Mobile */
 @media (max-width: 700px) {
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+
   .contact_value {
     font-size: 18px;
   }
 
   .sub_desc {
     flex-direction: column;
+  }
+  .sub_desc a {
+    padding: 15px;
   }
   .contentWrapper {
     padding-bottom: 60px; /* More padding at bottom for mobile */
@@ -661,9 +721,20 @@
     position: absolute;
     top: 0.5%;
   }
+  .headerImg {
+    width: 95%;
+    margin: 30px auto;
+  }
+
+  .slideshow {
+    height: 500px; /* Adjusted height for mobile */
+  }
 }
 @media (max-width: 480px) {
   .week_day {
     width: calc(50% - 10px); /* Display 2 days per row on very small screens */
+  }
+  .slideshow {
+    height: 400px; /* Further adjust for smaller screens */
   }
 }
