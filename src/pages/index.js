@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import auditoriumIMG from "../images/auditorium.jpeg";
-import headerIMG from "../images/header_img.jpg";
+import headerIMG from "../images/headercr_img.jpg";
 import interior1 from "../images/interior1.jpeg";
 import interior2 from "../images/interior2.jpeg";
 import mapSameba from "../images/map_sameba.jpg";
