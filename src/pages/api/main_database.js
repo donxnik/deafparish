@@ -41,16 +41,32 @@ async function handleGet(req, res) {
         details: weekError || auditoriumError,
       });
     }
+    // Fetch video section data
+    const { data: videoData, error: videoError } = await supabase
+      .from("video_section")
+      .select("id, link_txt, desc_txt")
+      .order("id", { ascending: true }); // Ensures consistent order of the 3 rows
+    console.log("Video data from Supabase:", videoData, "Error:", videoError);
+
+    if (videoError) {
+      console.error("Error fetching video data:", videoError);
+      return res.status(500).json({
+        error: `Error fetching video data: ${videoError.message}`,
+        details: videoError,
+      });
+    }
 
     return res.status(200).json({
       message: "Data retrieved successfully",
       data: {
         weekData: weekData || [],
         auditoriumData: auditoriumData || [],
+        videoData: videoData || [], // Add video data here
       },
       count: {
         week: weekData ? weekData.length : 0,
         auditorium: auditoriumData ? auditoriumData.length : 0,
+        video: videoData ? videoData.length : 0, // Add video count
       },
     });
   } catch (error) {
@@ -62,6 +78,47 @@ async function handleGet(req, res) {
 async function handlePost(req, res) {
   if (!req.body) {
     return res.status(400).json({ error: "Missing request body" });
+  }
+  // Handle video_section
+  if (req.body.videoData) {
+    const videoDataArray = req.body.videoData; // Expecting an array of { id, link_txt, desc_txt }
+    for (const video of videoDataArray) {
+      const { id, link_txt, desc_txt } = video;
+
+      // Transform watch?v= to embed/
+      const embedLink = link_txt.replace(
+        "https://www.youtube.com/watch?v=",
+        "https://www.youtube.com/embed/"
+      );
+
+      const { data: existingVideoData, error: checkVideoError } = await supabase
+        .from("video_section")
+        .select("id")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (checkVideoError) throw checkVideoError;
+
+      const videoData = { link_txt: embedLink, desc_txt };
+      let videoResult;
+
+      if (existingVideoData) {
+        videoResult = await supabase
+          .from("video_section")
+          .update(videoData)
+          .eq("id", id)
+          .select()
+          .single();
+      } else {
+        videoResult = await supabase
+          .from("video_section")
+          .insert({ id, ...videoData })
+          .select()
+          .single();
+      }
+
+      if (videoResult.error) throw videoResult.error;
+    }
   }
 
   const { id, wk1, wk2, wk3, wk4, wk5, wk6, wk7, title, desc } = req.body;
@@ -128,7 +185,19 @@ async function handlePost(req, res) {
 
     return res.status(200).json({
       message: "Data saved successfully",
-      data: { id, wk1, wk2, wk3, wk4, wk5, wk6, wk7, title, desc },
+      data: {
+        id,
+        wk1,
+        wk2,
+        wk3,
+        wk4,
+        wk5,
+        wk6,
+        wk7,
+        title,
+        desc,
+        videoData: req.body.videoData,
+      },
     });
   } catch (error) {
     console.error("Error updating/inserting data:", error);

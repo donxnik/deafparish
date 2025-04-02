@@ -23,7 +23,8 @@ function formatTextWithRedTime(text) {
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const images = [headerIMG, interior1, interior2];
-  const { weekData = [], auditoriumData = [] } = data;
+  const { weekData = [], auditoriumData = [], videoData = [] } = data;
+  const safeVideoData = Array.isArray(videoData) ? videoData : [];
   const safeWeekData = Array.isArray(weekData) ? weekData : [];
   const weekDays = safeWeekData[0] || {
     wk1: "",
@@ -157,39 +158,17 @@ export default function Home({ data = {} }) {
 
           {/* Add this code between "auditorium" and "contact_container" */}
           <div className={styles.videoContainer}>
-            <div className={styles.videoBlock}>
-              <iframe
-                className={styles.videoFrame}
-                src="https://www.youtube.com/embed/4P4-LkAaNQE"
-                frameBorder="0"
-                allowFullScreen
-              ></iframe>
-              <p className={styles.videoDescription}>
-                საეკლესიო გალობა - ტრადიციული გუნდური შესრულება
-              </p>
-            </div>
-            <div className={styles.videoBlock}>
-              <iframe
-                className={styles.videoFrame}
-                src="https://www.youtube.com/embed/4P4-LkAaNQE"
-                frameBorder="0"
-                allowFullScreen
-              ></iframe>
-              <p className={styles.videoDescription}>
-                წირვის მსვლელობა - საკვირაო ლიტურგია
-              </p>
-            </div>
-            <div className={styles.videoBlock}>
-              <iframe
-                className={styles.videoFrame}
-                src="https://www.youtube.com/embed/4P4-LkAaNQE"
-                frameBorder="0"
-                allowFullScreen
-              ></iframe>
-              <p className={styles.videoDescription}>
-                მონასტრის ისტორია - მოკლე მიმოხილვა
-              </p>
-            </div>
+            {safeVideoData.map((video, index) => (
+              <div key={index} className={styles.videoBlock}>
+                <iframe
+                  className={styles.videoFrame}
+                  src={video.link_txt}
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
+                <p className={styles.videoDescription}>{video.desc_txt}</p>
+              </div>
+            ))}
           </div>
 
           <div className={styles.contact_container}>
@@ -288,6 +267,7 @@ export async function getServerSideProps() {
         data: {
           weekData: result.data?.weekData || [],
           auditoriumData: result.data?.auditoriumData || [],
+          videoData: result.data?.videoData || [],
         },
       },
     };
