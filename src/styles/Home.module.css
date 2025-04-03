@@ -738,3 +738,163 @@
     height: 400px; /* Further adjust for smaller screens */
   }
 }
+
+.sermonContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.sermonBlock {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sermonBlock:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.sermonBlock h1 {
+  color: #333;
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  position: relative;
+}
+
+.sermonBlock h1:after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background-color: #7fc540;
+  bottom: -10px;
+  left: 0;
+}
+
+.sermonBlock p {
+  color: #555;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.readMore {
+  color: #7fc540;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.readMore:hover {
+  color: #5fa330;
+}
+
+/* Responsive styles */
+@media (max-width: 700px) {
+  .sermonBlock {
+    padding: 20px;
+  }
+
+  .sermonBlock h1 {
+    font-size: 28px;
+  }
+
+  .sermonBlock p {
+    font-size: 16px;
+  }
+}
+
+/* Add these styles to the end of your Home.module.css file */
+
+/* Container for the sermon page */
+.sermonPageContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1800px;
+  margin: 50px auto;
+  padding: 0 20px;
+  gap: 30px;
+}
+
+/* Main content area */
+.sermonContent {
+  flex: 3; /* Takes up 75% of the width */
+}
+
+/* Sidebar area */
+.sermonSidebar {
+  flex: 1; /* Takes up 25% of the width */
+  background-color: #f8f5f0;
+  max-width: 300px;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.sermonSidebar h2 {
+  color: #333;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.sermonSidebar h2:after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 2px;
+  background-color: #7fc540;
+  bottom: -8px;
+  left: 0;
+}
+
+.sermonSidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sermonSidebar li {
+  margin-bottom: 15px;
+}
+
+.sermonLink {
+  color: #555;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.sermonLink:hover {
+  color: #7fc540;
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+  .sermonPageContainer {
+    flex-direction: column;
+  }
+
+  .sermonSidebar {
+    width: 100%;
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sermonSidebar h2 {
+    font-size: 20px;
+  }
+
+  .sermonLink {
+    font-size: 14px;
+  }
+}

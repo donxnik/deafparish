@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "@/pages/admin94/admin.module.css";
 
-export default function Admin({ initialValues = {} }) {
+export default function Admin({ initialValues = {}, initialSermons = [] }) {
   const [values2, setValues2] = useState({
     wk1: initialValues.weekData?.wk1 || "",
     wk2: initialValues.weekData?.wk2 || "",
@@ -19,12 +19,22 @@ export default function Admin({ initialValues = {} }) {
     video3Link: initialValues.videoData?.[2]?.link_txt || "",
     video3Desc: initialValues.videoData?.[2]?.desc_txt || "",
   });
-
+  const [sermonValues, setSermonValues] = useState({
+    title_post: "",
+    sermon_text: "",
+    id: null, // For editing
+  });
+  const [sermons, setSermons] = useState(initialSermons);
   const [message, setMessage] = useState({ text: "", type: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setValues2((prev) => ({ ...prev, [name]: value })); // Update values2 instead of values
+    setValues2((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSermonChange = (e) => {
+    const { name, value } = e.target;
+    setSermonValues((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
@@ -66,9 +76,7 @@ export default function Admin({ initialValues = {} }) {
       const res = await fetch(`${baseUrl}/api/main_database`, {
         method: "POST",
         body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -81,10 +89,7 @@ export default function Admin({ initialValues = {} }) {
           type: "error",
         });
       } else {
-        setMessage({
-          text: "მონაცემები წარმატებით შეინახა!",
-          type: "success",
-        });
+        setMessage({ text: "მონაცემები წარმატებით შეინახა!", type: "success" });
         setTimeout(() => setMessage({ text: "", type: "" }), 5000);
       }
     } catch (error) {
@@ -92,6 +97,93 @@ export default function Admin({ initialValues = {} }) {
         text: "შეცდომა მონაცემების შენახვისას: " + error.message,
         type: "error",
       });
+    }
+  };
+
+  const handleSermonSubmit = async (event) => {
+    event.preventDefault();
+    const { title_post, sermon_text, id } = sermonValues;
+
+    if (!title_post || !sermon_text) {
+      setMessage({ text: "გთხოვთ შეავსოთ ყველა ველი", type: "error" });
+      return;
+    }
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const method = id ? "PUT" : "POST";
+      const url = `${baseUrl}/api/main_database`;
+
+      // For POST, ensure id is null to avoid sending an old id
+      const requestBody = id
+        ? { id, title_post, sermon_text }
+        : { title_post, sermon_text }; // Explicitly omit id for new sermons
+
+      const res = await fetch(url, {
+        method,
+        body: JSON.stringify(requestBody),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+
+      if (data.error) {
+        setMessage({ text: "შეცდომა: " + data.error, type: "error" });
+      } else {
+        setMessage({
+          text: id ? "ქადაგება განახლდა!" : "ქადაგება დაემატა!",
+          type: "success",
+        });
+        setSermonValues({ title_post: "", sermon_text: "", id: null });
+        const updatedSermons = id
+          ? sermons.map((s) =>
+              s.id === id ? { ...s, title_post, sermon_text } : s
+            )
+          : [{ id: data.data.id, title_post, sermon_text }, ...sermons];
+        setSermons(updatedSermons);
+        setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+      }
+    } catch (error) {
+      setMessage({ text: "შეცდომა: " + error.message, type: "error" });
+    }
+  };
+
+  const handleEditSermon = (sermon) => {
+    setSermonValues({
+      title_post: sermon.title_post,
+      sermon_text: sermon.sermon_text,
+      id: sermon.id,
+    });
+  };
+
+  const handleDeleteSermon = async (id) => {
+    if (!confirm("დარწმუნებული ხართ, რომ გსურთ წაშლა?")) return;
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const res = await fetch(`${baseUrl}/api/main_database`, {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+
+      if (data.error) {
+        setMessage({ text: "შეცდომა: " + data.error, type: "error" });
+      } else {
+        setMessage({ text: "ქადაგება წაიშალა!", type: "success" });
+        setSermons(sermons.filter((s) => s.id !== id));
+        setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+      }
+    } catch (error) {
+      setMessage({ text: "შეცდომა: " + error.message, type: "error" });
     }
   };
 
@@ -132,7 +224,7 @@ export default function Admin({ initialValues = {} }) {
               <textarea
                 className={styles.textarea}
                 name={day.id}
-                value={values2[day.id]} // Use values2 instead of values
+                value={values2[day.id]}
                 onChange={handleChange}
                 placeholder={`შეიყვანეთ ${day.name}ს განრიგი...`}
               />
@@ -149,7 +241,7 @@ export default function Admin({ initialValues = {} }) {
               type="text"
               className={styles.textarea}
               name="auditoriumTitle"
-              value={values2.auditoriumTitle} // Use values2
+              value={values2.auditoriumTitle}
               onChange={handleChange}
               placeholder="შეიყვანეთ აუდიტორიის სათაური..."
             />
@@ -161,7 +253,7 @@ export default function Admin({ initialValues = {} }) {
             <textarea
               className={styles.textarea}
               name="auditoriumDesc"
-              value={values2.auditoriumDesc} // Use values2
+              value={values2.auditoriumDesc}
               onChange={handleChange}
               placeholder="შეიყვანეთ აუდიტორიის აღწერა..."
             />
@@ -176,7 +268,7 @@ export default function Admin({ initialValues = {} }) {
               type="text"
               className={styles.textarea}
               name="video1Link"
-              value={values2.video1Link} // Use values2
+              value={values2.video1Link}
               onChange={handleChange}
               placeholder="შეიყვანეთ YouTube ლინკი (მაგ: https://www.youtube.com/watch?v=...)"
             />
@@ -188,7 +280,7 @@ export default function Admin({ initialValues = {} }) {
             <textarea
               className={styles.textarea}
               name="video1Desc"
-              value={values2.video1Desc} // Use values2
+              value={values2.video1Desc}
               onChange={handleChange}
               placeholder="შეიყვანეთ ვიდეოს აღწერა..."
             />
@@ -202,7 +294,7 @@ export default function Admin({ initialValues = {} }) {
               type="text"
               className={styles.textarea}
               name="video2Link"
-              value={values2.video2Link} // Use values2
+              value={values2.video2Link}
               onChange={handleChange}
               placeholder="შეიყვანეთ YouTube ლინკი (მაგ: https://www.youtube.com/watch?v=...)"
             />
@@ -214,7 +306,7 @@ export default function Admin({ initialValues = {} }) {
             <textarea
               className={styles.textarea}
               name="video2Desc"
-              value={values2.video2Desc} // Use values2
+              value={values2.video2Desc}
               onChange={handleChange}
               placeholder="შეიყვანეთ ვიდეოს აღწერა..."
             />
@@ -228,7 +320,7 @@ export default function Admin({ initialValues = {} }) {
               type="text"
               className={styles.textarea}
               name="video3Link"
-              value={values2.video3Link} // Use values2
+              value={values2.video3Link}
               onChange={handleChange}
               placeholder="შეიყვანეთ YouTube ლინკი (მაგ: https://www.youtube.com/watch?v=...)"
             />
@@ -240,7 +332,7 @@ export default function Admin({ initialValues = {} }) {
             <textarea
               className={styles.textarea}
               name="video3Desc"
-              value={values2.video3Desc} // Use values2
+              value={values2.video3Desc}
               onChange={handleChange}
               placeholder="შეიყვანეთ ვიდეოს აღწერა..."
             />
@@ -248,6 +340,79 @@ export default function Admin({ initialValues = {} }) {
 
           <div className={`${styles.input_field} ${styles.input_btn}`}>
             <input type="submit" value="დამახსოვრება" className={styles.btn} />
+          </div>
+        </form>
+
+        {/* Sermon Management Section */}
+        <h2>ქადაგებების მართვა</h2>
+        <form className={styles.form} onSubmit={handleSermonSubmit}>
+          <div className={styles.input_field}>
+            <label className={styles.day_label}>
+              <span>ქადაგების სათაური</span>
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              name="title_post"
+              value={sermonValues.title_post}
+              onChange={handleSermonChange}
+              placeholder="შეიყვანეთ ქადაგების სათაური..."
+            />
+          </div>
+          <div className={styles.input_field}>
+            <label className={styles.day_label}>
+              <span>ქადაგების ტექსტი</span>
+            </label>
+            <textarea
+              className={styles.textarea}
+              name="sermon_text"
+              value={sermonValues.sermon_text}
+              onChange={handleSermonChange}
+              placeholder="შეიყვანეთ ქადაგების ტექსტი..."
+            />
+          </div>
+          <div className={`${styles.input_field} ${styles.input_btn}`}>
+            <input
+              type="submit"
+              value={sermonValues.id ? "განახლება" : "დამატება"}
+              className={styles.btn}
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setSermonValues({ title_post: "", sermon_text: "", id: null })
+              }
+              className={`${styles.btn} ${styles.resetBtn}`} // Add resetBtn class
+            >
+              ახალი ქადაგება
+            </button>
+          </div>
+
+          {/* Sermon List */}
+          <div className={styles.sermonList}>
+            <h3>არსებული ქადაგებები</h3>
+            {sermons.length > 0 ? (
+              <ul>
+                {sermons.map((sermon) => (
+                  <li key={sermon.id} className={styles.sermonItem}>
+                    <span
+                      onClick={() => handleEditSermon(sermon)}
+                      className={styles.sermonTitle}
+                    >
+                      {sermon.title_post}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteSermon(sermon.id)}
+                      className={styles.deleteBtn}
+                    >
+                      წაშლა
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>ქადაგებები არ არის დამატებული.</p>
+            )}
           </div>
         </form>
       </div>
@@ -267,8 +432,9 @@ export async function getServerSideProps() {
           initialValues: {
             weekData: {},
             auditoriumData: {},
-            videoData: [], // Default empty array for videoData
+            videoData: [],
           },
+          initialSermons: [],
         },
       };
     }
@@ -280,12 +446,13 @@ export async function getServerSideProps() {
         data.auditoriumData && data.auditoriumData.length > 0
           ? data.auditoriumData[0]
           : {},
-      videoData: data.videoData || [], // Include videoData
+      videoData: data.videoData || [],
     };
 
     return {
       props: {
         initialValues,
+        initialSermons: data.blogData || [],
       },
     };
   } catch (error) {
@@ -295,8 +462,9 @@ export async function getServerSideProps() {
         initialValues: {
           weekData: {},
           auditoriumData: {},
-          videoData: [], // Default empty array for videoData
+          videoData: [],
         },
+        initialSermons: [],
       },
     };
   }

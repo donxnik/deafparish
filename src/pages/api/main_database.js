@@ -10,6 +10,10 @@ export default async function handler(req, res) {
       return await handleGet(req, res);
     case "POST":
       return await handlePost(req, res);
+    case "PUT": // For updating existing sermons
+      return await handlePut(req, res);
+    case "DELETE": // For deleting sermons
+      return await handleDelete(req, res);
     default:
       return res.status(405).json({ error: "Method not allowed" });
   }
@@ -56,17 +60,34 @@ async function handleGet(req, res) {
       });
     }
 
+    // after fetching blogpost
+    const { data: blogData, error: blogError } = await supabase
+      .from("blog_post")
+      .select("id, title_post, sermon_text")
+      .order("id", { ascending: false }); // Newest first
+    console.log("Blog data from Supabase:", blogData, "Error:", blogError);
+
+    if (blogError) {
+      console.error("Error fetching blog data:", blogError);
+      return res.status(500).json({
+        error: `Error fetching blog data: ${blogError.message}`,
+        details: blogError,
+      });
+    }
+
     return res.status(200).json({
       message: "Data retrieved successfully",
       data: {
         weekData: weekData || [],
         auditoriumData: auditoriumData || [],
-        videoData: videoData || [], // Add video data here
+        videoData: videoData || [],
+        blogData: blogData || [],
       },
       count: {
         week: weekData ? weekData.length : 0,
         auditorium: auditoriumData ? auditoriumData.length : 0,
-        video: videoData ? videoData.length : 0, // Add video count
+        video: videoData ? videoData.length : 0,
+        blog: blogData ? blogData.length : 0,
       },
     });
   } catch (error) {
@@ -79,51 +100,65 @@ async function handlePost(req, res) {
   if (!req.body) {
     return res.status(400).json({ error: "Missing request body" });
   }
-  // Handle video_section
-  if (req.body.videoData) {
-    const videoDataArray = req.body.videoData; // Expecting an array of { id, link_txt, desc_txt }
-    for (const video of videoDataArray) {
-      const { id, link_txt, desc_txt } = video;
 
-      // Transform watch?v= to embed/
-      const embedLink = link_txt.replace(
-        "https://www.youtube.com/watch?v=",
-        "https://www.youtube.com/embed/"
-      );
-
-      const { data: existingVideoData, error: checkVideoError } = await supabase
-        .from("video_section")
-        .select("id")
-        .eq("id", id)
-        .maybeSingle();
-
-      if (checkVideoError) throw checkVideoError;
-
-      const videoData = { link_txt: embedLink, desc_txt };
-      let videoResult;
-
-      if (existingVideoData) {
-        videoResult = await supabase
-          .from("video_section")
-          .update(videoData)
-          .eq("id", id)
-          .select()
-          .single();
-      } else {
-        videoResult = await supabase
-          .from("video_section")
-          .insert({ id, ...videoData })
-          .select()
-          .single();
-      }
-
-      if (videoResult.error) throw videoResult.error;
-    }
-  }
-
-  const { id, wk1, wk2, wk3, wk4, wk5, wk6, wk7, title, desc } = req.body;
+  const {
+    id,
+    wk1,
+    wk2,
+    wk3,
+    wk4,
+    wk5,
+    wk6,
+    wk7,
+    title,
+    desc,
+    title_post,
+    sermon_text,
+    videoData,
+  } = req.body;
 
   try {
+    // Handle video_section
+    if (videoData) {
+      const videoDataArray = req.body.videoData;
+      for (const video of videoDataArray) {
+        const { id, link_txt, desc_txt } = video;
+        const embedLink = link_txt.replace(
+          "https://www.youtube.com/watch?v=",
+          "https://www.youtube.com/embed/"
+        );
+
+        const { data: existingVideoData, error: checkVideoError } =
+          await supabase
+            .from("video_section")
+            .select("id")
+            .eq("id", id)
+            .maybeSingle();
+
+        if (checkVideoError) throw checkVideoError;
+
+        const videoData = { link_txt: embedLink, desc_txt };
+        let videoResult;
+
+        if (existingVideoData) {
+          videoResult = await supabase
+            .from("video_section")
+            .update(videoData)
+            .eq("id", id)
+            .select()
+            .single();
+        } else {
+          videoResult = await supabase
+            .from("video_section")
+            .insert({ id, ...videoData })
+            .select()
+            .single();
+        }
+
+        if (videoResult.error) throw videoResult.error;
+      }
+    }
+
     // Handle week_text
     if (wk1 !== undefined) {
       const { data: existingWeekData, error: checkWeekError } = await supabase
@@ -177,32 +212,91 @@ async function handlePost(req, res) {
           .from("auditoria_text")
           .insert({ id, ...auditoriumData })
           .select()
-          .single(); // Ensure single row is returned
+          .single();
       }
 
       if (auditoriumResult.error) throw auditoriumResult.error;
     }
 
+    // Handle blog_post (new sermon)
+    if (title_post && sermon_text) {
+      const { data, error } = await supabase
+        .from("blog_post")
+        .insert({ title_post, sermon_text }) // Do not include id here
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return res.status(200).json({
+        message: "Sermon added successfully",
+        data: { id: data.id, title_post, sermon_text },
+      });
+    }
+
     return res.status(200).json({
       message: "Data saved successfully",
-      data: {
-        id,
-        wk1,
-        wk2,
-        wk3,
-        wk4,
-        wk5,
-        wk6,
-        wk7,
-        title,
-        desc,
-        videoData: req.body.videoData,
-      },
+      data: { id, wk1, wk2, wk3, wk4, wk5, wk6, wk7, title, desc, videoData },
     });
   } catch (error) {
     console.error("Error updating/inserting data:", error);
+    return res
+      .status(500)
+      .json({
+        error: `Error updating/inserting data: ${error.message}`,
+        details: error,
+      });
+  }
+}
+async function handlePut(req, res) {
+  const { id, title_post, sermon_text } = req.body;
+
+  if (!id || !title_post || !sermon_text) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("blog_post")
+      .update({ title_post, sermon_text })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return res.status(200).json({
+      message: "Sermon updated successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error updating sermon:", error);
     return res.status(500).json({
-      error: `Error updating/inserting data: ${error.message}`,
+      error: `Error updating sermon: ${error.message}`,
+      details: error,
+    });
+  }
+}
+
+async function handleDelete(req, res) {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "Missing sermon ID" });
+  }
+
+  try {
+    const { error } = await supabase.from("blog_post").delete().eq("id", id);
+
+    if (error) throw error;
+
+    return res.status(200).json({
+      message: "Sermon deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting sermon:", error);
+    return res.status(500).json({
+      error: `Error deleting sermon: ${error.message}`,
       details: error,
     });
   }

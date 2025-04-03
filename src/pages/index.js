@@ -23,9 +23,15 @@ function formatTextWithRedTime(text) {
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const images = [headerIMG, interior1, interior2];
-  const { weekData = [], auditoriumData = [], videoData = [] } = data;
+  const {
+    weekData = [],
+    auditoriumData = [],
+    videoData = [],
+    blogData = [],
+  } = data;
   const safeVideoData = Array.isArray(videoData) ? videoData : [];
   const safeWeekData = Array.isArray(weekData) ? weekData : [];
+  const safeBlogData = Array.isArray(blogData) ? blogData : [];
   const weekDays = safeWeekData[0] || {
     wk1: "",
     wk2: "",
@@ -139,6 +145,7 @@ export default function Home({ data = {} }) {
               </div>
             ))}
           </div>
+          //auditoriom section
           <div className={styles.auditorium}>
             <div className={styles.auditorium_image}>
               <Image
@@ -155,8 +162,32 @@ export default function Home({ data = {} }) {
               <p>{auditoriumInfo.desc}</p>
             </div>
           </div>
-
-          {/* Add this code between "auditorium" and "contact_container" */}
+          {/* New Sermon Section */}
+          <div className={styles.sermonContainer}>
+            {safeBlogData.length > 0 && (
+              <div className={styles.sermonBlock}>
+                <h1>{safeBlogData[0].title_post}</h1>
+                <p>
+                  {safeBlogData[0].sermon_text
+                    .split(" ")
+                    .slice(0, 100)
+                    .join(" ")}
+                  {safeBlogData[0].sermon_text.split(" ").length > 100 && (
+                    <>
+                      {" ... "}
+                      <a
+                        href={`/sermon/${safeBlogData[0].id}`}
+                        className={styles.readMore}
+                      >
+                        კითხვის გაგრძელება
+                      </a>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+          </div>
+          //video container section
           <div className={styles.videoContainer}>
             {safeVideoData.map((video, index) => (
               <div key={index} className={styles.videoBlock}>
@@ -170,7 +201,6 @@ export default function Home({ data = {} }) {
               </div>
             ))}
           </div>
-
           <div className={styles.contact_container}>
             <div className={styles.contact_title}>
               <h1>საკონტაქტო ინფორმაცია</h1>
@@ -268,6 +298,7 @@ export async function getServerSideProps() {
           weekData: result.data?.weekData || [],
           auditoriumData: result.data?.auditoriumData || [],
           videoData: result.data?.videoData || [],
+          blogData: result.data?.blogData || [],
         },
       },
     };
@@ -278,6 +309,8 @@ export async function getServerSideProps() {
         data: {
           weekData: [],
           auditoriumData: [],
+          videoData: [],
+          blogData: [],
         },
       },
     };
