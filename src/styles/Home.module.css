@@ -215,6 +215,13 @@
   white-space: normal;
 }
 
+.week_day h1,
+.week_day h3,
+.week_day h1 p {
+  position: relative;
+  z-index: 3; /* Text above the vineyard overlay */
+}
+
 /* Ensure the red time text doesn't break layout */
 .week_day p span {
   display: inline;
@@ -774,8 +781,8 @@
   .week_calendar_vineyard {
     width: 140px;
     height: 140px;
-    top: -10px;
-    left: -10px;
+    top: -20px;
+    left: -15px;
   }
 
   .auditorium_vineyard {
