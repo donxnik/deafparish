@@ -141,6 +141,7 @@ export default function Home({ data = {} }) {
             </div>
           </div>
           <div className={styles.week_calendar}>
+            <div className={styles.week_calendar_vineyard}></div>
             <div className={styles.week_calendar_inner}>
               {dayNames.map((day, index) => (
                 <div key={index} className={styles.week_day}>
@@ -152,6 +153,7 @@ export default function Home({ data = {} }) {
           </div>
 
           <div className={styles.auditorium}>
+            <div className={styles.auditorium_vineyard}></div>
             <div className={styles.auditorium_image}>
               <Image
                 src={auditoriumIMG}
