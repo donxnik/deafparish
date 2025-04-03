@@ -781,7 +781,7 @@
   .week_calendar_vineyard {
     width: 240px;
     height: 240px;
-    top: -40px;
+    top: -45px;
     left: -35px;
   }
 
@@ -843,6 +843,7 @@
     max-width: 300px;
     margin: 0;
     padding: 15px;
+    padding-top: 20px;
     min-width: unset;
   }
 
