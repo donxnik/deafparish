@@ -27,6 +27,18 @@
   pointer-events: none;
 }
 
+@keyframes levitate {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px); /* Move up by 15px */
+  }
+  100% {
+    transform: translateY(0); /* Return to original position */
+  }
+}
+
 /* Left angel */
 .leftAngel {
   position: absolute;
@@ -38,6 +50,7 @@
   background-repeat: no-repeat;
   background-position: left top;
   background-size: contain;
+  animation: levitate 3s ease-in-out infinite; /* Apply levitation animation */
 }
 
 /* Right angel */
@@ -51,6 +64,8 @@
   background-repeat: no-repeat;
   background-position: right top;
   background-size: contain;
+  animation: levitate 3s ease-in-out infinite; /* Apply levitation animation */
+  animation-delay: 0.5s; /* Slight delay for a staggered effect */
 }
 
 /* Content wrapper */
@@ -778,6 +793,19 @@
 
 /* Mobile portrait (below 700px) */
 @media (max-width: 700px) {
+  .headerTitle {
+    content: "ივერიის ღვთისმშობლის ლავრა";
+    width: auto;
+    font-family: "Cinzel", serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
   .week_calendar_vineyard {
     width: 240px;
     height: 240px;
@@ -790,6 +818,19 @@
     height: 420px;
     top: -65px;
     right: -160px;
+  }
+
+  /* Single consolidated rule for angels */
+  .leftAngel,
+  .rightAngel {
+    position: absolute;
+    top: 110px; /* Lower the angels by 50px (adjust as needed) */
+    width: 200px;
+    animation: levitate 6.5s ease-in-out infinite; /* Keep the animation */
+  }
+
+  .rightAngel {
+    animation-delay: 0.5s; /* Ensure the delay persists */
   }
 
   .dot {
@@ -926,13 +967,7 @@
     line-height: 32px;
   }
 
-  .leftAngel,
-  .rightAngel {
-    position: absolute;
-    top: 0.3%;
-    width: 200px;
-  }
-
+  /* Remove the conflicting rule */
   .headerImg {
     width: 95%;
     margin: 30px auto;
@@ -962,7 +997,6 @@
     margin: 15px 0;
   }
 }
-
 /* Mobile landscape (below 900px) */
 @media (max-width: 900px) and (orientation: landscape) {
   .week_calendar {
