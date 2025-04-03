@@ -187,7 +187,6 @@ export default function Home({ data = {} }) {
               </div>
             )}
           </div>
-          //video container section
           <div className={styles.videoContainer}>
             {safeVideoData.map((video, index) => (
               <div key={index} className={styles.videoBlock}>
