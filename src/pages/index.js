@@ -145,7 +145,7 @@ export default function Home({ data = {} }) {
               </div>
             ))}
           </div>
-          //auditoriom section
+
           <div className={styles.auditorium}>
             <div className={styles.auditorium_image}>
               <Image
