@@ -929,7 +929,8 @@
   .leftAngel,
   .rightAngel {
     position: absolute;
-    top: 0.5%;
+    top: 0.3%;
+    width: 200px;
   }
 
   .headerImg {
