@@ -6,18 +6,27 @@ import headerIMG from "../images/headercr_img.jpg";
 import interior1 from "../images/interior1.jpeg";
 import interior2 from "../images/interior2.jpeg";
 import mapSameba from "../images/map_sameba.jpg";
+import iconByz from "../images/icon_byz.png";
 import { useState, useEffect } from "react";
 
 function formatTextWithRedTime(text) {
   if (!text) return text;
 
+  // This regex looks for time patterns like "8:00" or "19:00"
   const timeRegex = /(\d{1,2}):(\d{2})/g;
+
+  // Replace time patterns with spans that have red color
   const formattedText = text.replace(
     timeRegex,
-    '<span style="color: red">$1</span>:<span style="color: red">$2</span>'
+    '<span style="color: red; font-weight: 600;">$1:$2</span>'
   );
 
-  return <span dangerouslySetInnerHTML={{ __html: formattedText }} />;
+  return (
+    <span
+      style={{ display: "inline-block", whiteSpace: "normal", width: "100%" }}
+      dangerouslySetInnerHTML={{ __html: formattedText }}
+    />
+  );
 }
 
 export default function Home({ data = {} }) {
@@ -118,13 +127,7 @@ export default function Home({ data = {} }) {
                 />
               </div>
             ))}
-            {/* Remove these two divs */}
-            {/* <div className={styles.prev} onClick={prevSlide}>
-    &#10094;
-  </div>
-  <div className={styles.next} onClick={nextSlide}>
-    &#10095;
-  </div> */}
+
             <div className={styles.dotsContainer}>
               {images.map((_, index) => (
                 <div
@@ -138,12 +141,14 @@ export default function Home({ data = {} }) {
             </div>
           </div>
           <div className={styles.week_calendar}>
-            {dayNames.map((day, index) => (
-              <div key={index} className={styles.week_day}>
-                <h1>{day}</h1>
-                <p>{formatTextWithRedTime(weekDays[`wk${index + 1}`])}</p>
-              </div>
-            ))}
+            <div className={styles.week_calendar_inner}>
+              {dayNames.map((day, index) => (
+                <div key={index} className={styles.week_day}>
+                  <h1>{day}</h1>
+                  <p>{formatTextWithRedTime(weekDays[`wk${index + 1}`])}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className={styles.auditorium}>
@@ -162,6 +167,16 @@ export default function Home({ data = {} }) {
               <p>{auditoriumInfo.desc}</p>
             </div>
           </div>
+          <div className={styles.ornamentContainer}>
+            <Image
+              src={iconByz}
+              alt="Byzantine ornament"
+              width={150} // Adjust size as needed
+              height={150} // Adjust size as needed
+              className={styles.ornamentImage}
+            />
+          </div>
+
           {/* New Sermon Section */}
           <div className={styles.sermonContainer}>
             {safeBlogData.length > 0 && (

@@ -1,21 +1,24 @@
+/* Home.module.css */
+
+/* Main container */
 .main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
   background: url(../images/kedeli.jpg) no-repeat center center fixed;
-  background-attachment: fixed; /* Ensure fixed background */
+  background-attachment: fixed;
   background-size: cover;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   position: relative;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden;
 }
 
 /* Angel overlay container */
 .angelOverlay {
-  position: absolute; /* Change from fixed to absolute */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -50,7 +53,7 @@
   background-size: contain;
 }
 
-/* Content wrapper to ensure content is above background */
+/* Content wrapper */
 .contentWrapper {
   position: relative;
   z-index: 1;
@@ -62,21 +65,17 @@
   margin: 0;
   padding: 20px 20px 40px 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  flex: 1; /* Take up all available space */
+  flex: 1;
   height: auto;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
 /* Common styles */
-.fontMontserrat {
-  font-family: "Montserrat", Arial, Helvetica, sans-serif;
-}
-
 .centeredImage {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Use contain to preserve the image's aspect ratio */
+  object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: absolute;
@@ -99,7 +98,7 @@
 .slideshow {
   position: relative;
   width: 100%;
-  height: 1000px; /* Match the image height */
+  height: 1000px;
   overflow: hidden;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -149,7 +148,7 @@
 .headerImg {
   margin: 50px auto;
   width: 90%;
-  max-width: 1000px; /* Match the image width */
+  max-width: 1000px;
   display: block;
   position: relative;
 }
@@ -168,14 +167,19 @@
 .week_day {
   margin: 15px;
   color: black;
-  padding: 10px;
+  padding: 15px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 150px;
 }
 
 .week_day h1 {
   font-size: 38px;
   font-weight: 600;
-  margin: 0 auto;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
 }
 
 .week_day h3 {
@@ -183,18 +187,22 @@
   color: #ee0022;
   font-weight: 600;
   margin: 10px 0;
+  line-height: 1.2;
 }
 
 .week_day p {
   font-size: 24px;
   font-weight: 400;
-  width: 300px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 10px 0 0 0;
+  line-height: 1.4;
+  white-space: normal;
 }
 
-.week_day:hover {
-  background-color: #7fc540;
-  transition: all 1s;
+/* Ensure the red time text doesn't break layout */
+.week_day p span {
+  display: inline;
+  line-height: inherit;
 }
 
 /* Auditorium section */
@@ -217,13 +225,13 @@
 .auditorium_image {
   flex: 1;
   max-width: 580px;
-  width: 100%; /* Add this */
+  width: 100%;
 }
 
 .auditorium_image img {
-  width: 100%; /* Add this */
-  height: auto; /* Add this */
-  object-fit: contain; /* Add this */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .auditorium_desc {
@@ -260,9 +268,9 @@
 
 /* Contact section */
 .contact_container {
-  padding: 80px 0 0 0; /* Remove bottom padding */
+  padding: 80px 0 0 0;
   margin-top: 50px;
-  margin-bottom: 0; /* Ensure no bottom margin */
+  margin-bottom: 0;
   background-color: transparent;
   display: flex;
   flex-direction: column;
@@ -293,7 +301,7 @@
 
 .sub_contact_container {
   margin-top: 40px;
-  margin-bottom: 0; /* Ensure no bottom margin */
+  margin-bottom: 0;
   background-color: #fff;
   display: flex;
   flex-direction: row;
@@ -440,40 +448,40 @@
 
 /* Google logo colors */
 .google_G {
-  color: #4285f4; /* Blue */
+  color: #4285f4;
 }
 
 .google_O1 {
-  color: #ea4335; /* Red */
+  color: #ea4335;
 }
 
 .google_O2 {
-  color: #fbbc05; /* Yellow */
+  color: #fbbc05;
 }
 
 .google_L {
-  color: #34a853; /* Green */
+  color: #34a853;
 }
 
 .google_E {
-  color: #ea4335; /* Red */
+  color: #ea4335;
 }
 
 /* Maps text colors */
 .maps_M {
-  color: #4285f4; /* Blue */
+  color: #4285f4;
 }
 
 .maps_A {
-  color: #ea4335; /* Red */
+  color: #ea4335;
 }
 
 .maps_P {
-  color: #fbbc05; /* Yellow */
+  color: #fbbc05;
 }
 
 .maps_S {
-  color: #34a853; /* Green */
+  color: #34a853;
 }
 
 /* Daily info section */
@@ -499,8 +507,7 @@
   color: #333333;
 }
 
-/* Add these CSS styles to your Home.module.css file */
-
+/* Video section */
 .videoContainer {
   display: flex;
   justify-content: space-between;
@@ -543,202 +550,7 @@
   line-height: 1.4;
 }
 
-/* Responsive styles for videos */
-@media (max-width: 900px) {
-  .videoContainer {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .videoBlock {
-    flex: 0 0 calc(50% - 20px);
-    margin-bottom: 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  .videoBlock {
-    flex: 0 0 100%;
-  }
-
-  .videoDescription {
-    font-size: 16px;
-  }
-}
-
-/* Tablet and Smaller Desktop */
-@media (min-width: 701px) and (max-width: 1120px) {
-  .headerTitle {
-    font-size: 24px;
-  }
-
-  .week_calendar {
-    width: unset;
-    flex-wrap: nowrap;
-  }
-
-  .week_day h1 {
-    border-bottom: 1px solid black;
-    padding-top: 5px;
-  }
-
-  .sub_contact_desc h1 {
-    font-size: 24px;
-  }
-
-  .daily_info {
-    padding: 150px 150px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 700px) {
-  .dot {
-    width: 8px;
-    height: 8px;
-  }
-
-  .contact_value {
-    font-size: 18px;
-  }
-
-  .sub_desc {
-    flex-direction: column;
-  }
-  .sub_desc a {
-    padding: 15px;
-  }
-  .contentWrapper {
-    padding-bottom: 60px; /* More padding at bottom for mobile */
-    min-height: 100%; /* Ensure it fills the container */
-  }
-
-  /* Ensure the last element has margin to prevent cutoff */
-  .contact_container {
-    margin-bottom: 30px;
-  }
-
-  .auditorium_image {
-    max-width: 100%; /* Ensure it takes full width on mobile */
-    width: 100%;
-  }
-
-  .headerTitle {
-    font-size: 24px;
-    width: 80%;
-  }
-
-  .week_calendar {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: 5px;
-  }
-
-  .week_day {
-    width: calc(33.33% - 10px); /* Display 3 days per row */
-    margin: 5px;
-  }
-
-  .week_day h1 {
-    font-size: 24px;
-  }
-
-  .week_day h3 {
-    font-size: 24px;
-  }
-
-  .week_day p {
-    font-size: 14px;
-    width: 100%;
-  }
-
-  .auditorium {
-    flex-direction: column;
-    padding: 30px 20px;
-    margin: 50px auto;
-  }
-
-  .auditorium_image {
-    max-width: 100%;
-    order: 1; /* Move image to top on mobile */
-  }
-
-  .auditorium_desc {
-    order: 2; /* Move description below image on mobile */
-    padding: 10px;
-  }
-
-  .auditorium h1 {
-    font-size: 28px;
-  }
-
-  .auditorium p {
-    font-size: 16px;
-  }
-
-  .sub_contact_container {
-    flex-direction: column;
-    width: 90%;
-  }
-
-  .sub_contact_img {
-    width: 100%;
-    height: 250px;
-  }
-
-  .sub_contact_desc {
-    width: 100%;
-    padding: 30px;
-  }
-
-  .sub_desc {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .btn_maps,
-  .btn_facebook {
-    width: 100%;
-  }
-
-  .daily_info {
-    padding: 100px 20px;
-    font-size: 20px;
-  }
-
-  .daily_text {
-    font-size: 26px;
-    line-height: 32px;
-  }
-
-  .leftAngel {
-    position: absolute;
-    top: 0.5%;
-  }
-  .rightAngel {
-    position: absolute;
-    top: 0.5%;
-  }
-  .headerImg {
-    width: 95%;
-    margin: 30px auto;
-  }
-
-  .slideshow {
-    height: 500px; /* Adjusted height for mobile */
-  }
-}
-@media (max-width: 480px) {
-  .week_day {
-    width: calc(50% - 10px); /* Display 2 days per row on very small screens */
-  }
-  .slideshow {
-    height: 400px; /* Further adjust for smaller screens */
-  }
-}
-
+/* Sermon section */
 .sermonContainer {
   width: 100%;
   max-width: 1200px;
@@ -795,42 +607,25 @@
   color: #5fa330;
 }
 
-/* Responsive styles */
-@media (max-width: 700px) {
-  .sermonBlock {
-    padding: 20px;
-  }
-
-  .sermonBlock h1 {
-    font-size: 28px;
-  }
-
-  .sermonBlock p {
-    font-size: 16px;
-  }
-}
-
-/* Add these styles to the end of your Home.module.css file */
-
-/* Container for the sermon page */
-.sermonPageContainer {
+/* Ornament container */
+.ornamentContainer {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  max-width: 1800px;
-  margin: 50px auto;
-  padding: 0 20px;
-  gap: 30px;
+  margin: 20px 0;
 }
 
-/* Main content area */
-.sermonContent {
-  flex: 3; /* Takes up 75% of the width */
+/* Ornament image */
+.ornamentImage {
+  width: 150px;
+  height: auto;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-/* Sidebar area */
 .sermonSidebar {
-  flex: 1; /* Takes up 25% of the width */
+  flex: 1;
   background-color: #f8f5f0;
   max-width: 300px;
   border-radius: 12px;
@@ -863,9 +658,22 @@
 
 .sermonSidebar li {
   margin-bottom: 15px;
+  position: relative;
+  padding-left: 15px;
 }
 
-.sermonLink {
+.sermonSidebar li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  height: calc(100% - 10px);
+  width: 3px;
+  background-color: #7fc540;
+  border-radius: 3px;
+}
+
+.sermonSidebar .sermonLink {
   color: #555;
   font-size: 16px;
   text-decoration: none;
@@ -873,28 +681,322 @@
   transition: color 0.3s ease;
 }
 
-.sermonLink:hover {
+.sermonSidebar .sermonLink:hover {
   color: #7fc540;
 }
 
+.sermonPageContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+  max-width: 2200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Sermon content */
+.sermonContent {
+  flex: 3; /* Takes up more space than the sidebar */
+  width: 100%;
+}
+
 /* Responsive styles */
-@media (max-width: 900px) {
-  .sermonPageContainer {
-    flex-direction: column;
+
+/* Very small screens (below 480px) */
+@media (max-width: 480px) {
+  .slideshow {
+    height: 400px;
   }
 
-  .sermonSidebar {
+  .week_day {
     width: 100%;
-    margin-top: 30px;
+    max-width: 300px;
+    margin: 0;
+    padding: 15px;
+  }
+
+  .week_day h1 {
+    font-size: 24px;
+  }
+
+  .week_day h3 {
+    font-size: 24px;
+  }
+
+  .week_day p {
+    font-size: 16px;
   }
 }
 
+/* Mobile portrait (below 700px) */
 @media (max-width: 700px) {
-  .sermonSidebar h2 {
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .contact_value {
+    font-size: 18px;
+  }
+
+  .sub_desc {
+    flex-direction: column;
+  }
+
+  .sub_desc a {
+    padding: 15px;
+  }
+
+  .contentWrapper {
+    padding-bottom: 60px;
+    min-height: 100%;
+  }
+
+  .contact_container {
+    margin-bottom: 30px;
+  }
+
+  .auditorium_image {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .headerTitle {
+    font-size: 24px;
+    width: 80%;
+  }
+
+  /* Updated week_calendar for mobile portrait */
+  .week_calendar {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .week_day {
+    width: 100%;
+    max-width: 300px;
+    margin: 0;
+    padding: 15px;
+    min-width: unset;
+  }
+
+  .week_day h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .week_day h3 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .week_day p {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-top: 8px;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .auditorium {
+    flex-direction: column;
+    padding: 30px 20px;
+    margin: 50px auto;
+  }
+
+  .auditorium_image {
+    max-width: 100%;
+    order: 1;
+  }
+
+  .auditorium_desc {
+    order: 2;
+    padding: 10px;
+  }
+
+  .auditorium h1 {
+    font-size: 28px;
+  }
+
+  .auditorium p {
+    font-size: 16px;
+  }
+
+  .sub_contact_container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .sub_contact_img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .sub_contact_desc {
+    width: 100%;
+    padding: 30px;
+  }
+
+  .sub_desc {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn_maps,
+  .btn_facebook {
+    width: 100%;
+  }
+
+  .daily_info {
+    padding: 100px 20px;
     font-size: 20px;
   }
 
-  .sermonLink {
-    font-size: 14px;
+  .daily_text {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .leftAngel,
+  .rightAngel {
+    position: absolute;
+    top: 0.5%;
+  }
+
+  .headerImg {
+    width: 95%;
+    margin: 30px auto;
+  }
+
+  .slideshow {
+    height: 500px;
+  }
+
+  .sermonBlock {
+    padding: 20px;
+  }
+
+  .sermonBlock h1 {
+    font-size: 28px;
+  }
+
+  .sermonBlock p {
+    font-size: 16px;
+  }
+
+  .ornamentImage {
+    width: 120px;
+  }
+
+  .ornamentContainer {
+    margin: 15px 0;
+  }
+}
+
+/* Mobile landscape (below 900px) */
+@media (max-width: 900px) and (orientation: landscape) {
+  .week_calendar {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+
+  .week_calendar_inner {
+    display: flex;
+    flex-direction: column; /* Stack vertically */
+    gap: 15px;
+    align-items: center;
+  }
+
+  .week_day {
+    width: 100%;
+    max-width: 300px;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .week_day h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .week_day p {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .contentWrapper {
+    align-items: center;
+  }
+}
+
+/* Responsive styles for videos */
+@media (max-width: 900px) {
+  .videoContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .videoBlock {
+    flex: 0 0 calc(50% - 20px);
+    margin-bottom: 20px;
+  }
+
+  .sermonPageContainer {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sermonContent {
+    flex: 1;
+  }
+
+  .sermonSidebar {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .videoBlock {
+    flex: 0 0 100%;
+  }
+
+  .videoDescription {
+    font-size: 16px;
+  }
+}
+
+/* Tablet and Smaller Desktop */
+@media (min-width: 701px) and (max-width: 1120px) {
+  .headerTitle {
+    font-size: 24px;
+  }
+
+  .week_calendar {
+    width: unset;
+    flex-wrap: nowrap;
+  }
+
+  .week_day h1 {
+    border-bottom: 1px solid black;
+    padding-top: 5px;
+  }
+
+  .sub_contact_desc h1 {
+    font-size: 24px;
+  }
+
+  .daily_info {
+    padding: 150px 150px;
   }
 }
