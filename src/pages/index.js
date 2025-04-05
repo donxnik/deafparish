@@ -1,10 +1,13 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
-import auditoriumIMG from "../images/auditorium.jpeg";
-import headerIMG from "../images/headercr_img.jpg";
-import interior1 from "../images/interior1.jpeg";
-import interior2 from "../images/interior2.jpeg";
+import auditoriumIMG from "../images/clasroom.jpg";
+import e1 from "../images/e1.jpg";
+import e2 from "../images/e2.jpg";
+import e3 from "../images/e3.jpg";
+import e4 from "../images/e4.jpg";
+import e5 from "../images/e5.jpg";
+import e6 from "../images/e6.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
 import { useState, useEffect } from "react";
@@ -31,7 +34,7 @@ function formatTextWithRedTime(text) {
 
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const images = [headerIMG, interior1, interior2];
+  const images = [e1, e2, e3, e4, e5, e6];
   const {
     weekData = [],
     auditoriumData = [],
