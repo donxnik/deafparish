@@ -1006,19 +1006,26 @@
     background-color: #fff;
   }
 
+  .week_calendar_vineyard {
+    position: absolute;
+    top: -40px; /* Slightly above the container to overlap the edge */
+    left: -30px; /* Slightly to the left to overlap the edge */
+    width: 230px; /* Adjust size based on your vineyard.png dimensions */
+    height: 230px;
+  }
+
   .week_calendar_inner {
-    display: flex;
-    flex-direction: column; /* Stack vertically */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    align-items: center;
+    justify-items: center;
   }
 
   .week_day {
     width: 100%;
-    max-width: 300px;
-    margin: 0;
     padding: 15px;
     box-sizing: border-box;
+    text-align: center;
   }
 
   .week_day h1 {
@@ -1033,6 +1040,34 @@
 
   .contentWrapper {
     align-items: center;
+  }
+
+  .headerTitle {
+    content: "ივერიის ღვთისმშობლის ლავრა";
+    width: auto;
+    font-family: "Cinzel", serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .leftAngel,
+  .rightAngel {
+    top: 30px;
+    width: 280px;
+    animation: levitate 6.5s ease-in-out infinite;
+  }
+
+  .rightAngel {
+    animation-delay: 0.5s;
+  }
+
+  .slideshow {
+    height: 100vh;
   }
 }
 
