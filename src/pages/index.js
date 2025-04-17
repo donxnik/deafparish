@@ -8,6 +8,7 @@ import e3 from "../images/e3.jpg";
 import e4 from "../images/e4.jpg";
 import e5 from "../images/e5.jpg";
 import e6 from "../images/e6.jpg";
+import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
 import { useState, useEffect } from "react";
@@ -15,10 +16,7 @@ import { useState, useEffect } from "react";
 function formatTextWithRedTime(text) {
   if (!text) return text;
 
-  // This regex looks for time patterns like "8:00" or "19:00"
   const timeRegex = /(\d{1,2}):(\d{2})/g;
-
-  // Replace time patterns with spans that have red color
   const formattedText = text.replace(
     timeRegex,
     '<span style="color: red; font-weight: 600;">$1:$2</span>'
@@ -34,6 +32,7 @@ function formatTextWithRedTime(text) {
 
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [expandedDays, setExpandedDays] = useState([]);
   const images = [e1, e2, e3, e4, e5, e6];
   const {
     weekData = [],
@@ -61,6 +60,14 @@ export default function Home({ data = {} }) {
     desc: "აუდიტორია გამოიყენება სხვადასხვა სახის შეხვედრებისთვის და ღონისძიებებისთვის.",
   };
 
+  const toggleExpand = (dayKey) => {
+    setExpandedDays((prev) =>
+      prev.includes(dayKey)
+        ? prev.filter((key) => key !== dayKey)
+        : [...prev, dayKey]
+    );
+  };
+
   const dayNames = [
     "ორშაბათი",
     "სამშაბათი",
@@ -71,7 +78,6 @@ export default function Home({ data = {} }) {
     "კვირა",
   ];
 
-  // Auto-advance slides
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
@@ -80,7 +86,6 @@ export default function Home({ data = {} }) {
     return () => clearInterval(timer);
   }, [images.length]);
 
-  // Navigation functions
   const nextSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
   };
@@ -104,7 +109,6 @@ export default function Home({ data = {} }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        {/* Angel overlay - will be above everything */}
         <div className={styles.angelOverlay}>
           <div className={styles.leftAngel}></div>
           <div className={styles.rightAngel}></div>
@@ -130,7 +134,6 @@ export default function Home({ data = {} }) {
                 />
               </div>
             ))}
-
             <div className={styles.dotsContainer}>
               {images.map((_, index) => (
                 <div
@@ -146,12 +149,98 @@ export default function Home({ data = {} }) {
           <div className={styles.week_calendar}>
             <div className={styles.week_calendar_vineyard}></div>
             <div className={styles.week_calendar_inner}>
-              {dayNames.map((day, index) => (
-                <div key={index} className={styles.week_day}>
-                  <h1>{day}</h1>
-                  <p>{formatTextWithRedTime(weekDays[`wk${index + 1}`])}</p>
+              <div className={`${styles.week_day} ${styles.leftColumn}`}>
+                <div className={styles.week_day_item} data-day-order="1">
+                  <h1 onClick={() => toggleExpand("wk1")}>{dayNames[0]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk1") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk1)}</p>
+                  </div>
                 </div>
-              ))}
+                <div className={styles.week_day_item} data-day-order="3">
+                  <h1 onClick={() => toggleExpand("wk3")}>{dayNames[2]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk3") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk3)}</p>
+                  </div>
+                </div>
+                <div className={styles.week_day_item} data-day-order="6">
+                  <h1 onClick={() => toggleExpand("wk5")}>{dayNames[4]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk5") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk5)}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.iveria_image} data-day-order="4">
+                <Image
+                  src={iveriaIMG}
+                  alt="Iveria Icon"
+                  width={200}
+                  height={300}
+                  loading="lazy"
+                  className={styles.rounded_image}
+                />
+              </div>
+
+              <div className={`${styles.week_day} ${styles.rightColumn}`}>
+                <div className={styles.week_day_item} data-day-order="2">
+                  <h1 onClick={() => toggleExpand("wk2")}>{dayNames[1]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk2") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk2)}</p>
+                  </div>
+                </div>
+                <div className={styles.week_day_item} data-day-order="5">
+                  <h1 onClick={() => toggleExpand("wk4")}>{dayNames[3]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk4") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk4)}</p>
+                  </div>
+                </div>
+                <div className={styles.week_day_item} data-day-order="7">
+                  <h1 onClick={() => toggleExpand("wk6")}>{dayNames[5]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk6") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk6)}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`${styles.week_day} ${styles.bottomRow}`}
+                data-day-order="8"
+              >
+                <div className={styles.week_day_item}>
+                  <h1 onClick={() => toggleExpand("wk7")}>{dayNames[6]}</h1>
+                  <div
+                    className={`${styles.week_day_text} ${
+                      expandedDays.includes("wk7") ? styles.expanded : ""
+                    }`}
+                  >
+                    <p>{formatTextWithRedTime(weekDays.wk7)}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -176,13 +265,12 @@ export default function Home({ data = {} }) {
             <Image
               src={iconByz}
               alt="Byzantine ornament"
-              width={150} // Adjust size as needed
-              height={150} // Adjust size as needed
+              width={150}
+              height={150}
               className={styles.ornamentImage}
             />
           </div>
 
-          {/* New Sermon Section */}
           <div className={styles.sermonContainer}>
             {safeBlogData.length > 0 && (
               <div className={styles.sermonBlock}>
@@ -214,6 +302,8 @@ export default function Home({ data = {} }) {
                   className={styles.videoFrame}
                   src={video.link_txt}
                   frameBorder="0"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
                 <p className={styles.videoDescription}>{video.desc_txt}</p>
@@ -225,11 +315,10 @@ export default function Home({ data = {} }) {
               <h1>საკონტაქტო ინფორმაცია</h1>
               <p>სატელეფონო კონტაქტი და ადგილმდებარეობა</p>
             </div>
-
             <div className={styles.sub_contact_container}>
               <div className={styles.sub_contact_img}>
                 <Image
-                  src={mapSameba} // You'll need to import a map or church image
+                  src={mapSameba}
                   alt="location map"
                   layout="fill"
                   objectFit="cover"
@@ -238,7 +327,7 @@ export default function Home({ data = {} }) {
               <div className={styles.sub_contact_desc}>
                 <div className={styles.contact_info_item}>
                   <span className={styles.contact_label}>
-                    საკონტაკტო პირი: დეკანოზი გიორგი კალანდია:
+                    საკონტაქტო პირი: დეკანოზი გიორგი კალანდია:
                   </span>
                   <div className={styles.phone_number}>
                     <svg
@@ -306,7 +395,7 @@ export async function getServerSideProps() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/main_database`);
     const result = await response.json();
-    console.log("API response in Home:", result); // Add this
+    console.log("API response in Home:", result);
     if (!response.ok) {
       throw new Error(`API request failed with status: ${response.status}`);
     }

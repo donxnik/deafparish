@@ -123,10 +123,18 @@ async function handlePost(req, res) {
       const videoDataArray = req.body.videoData;
       for (const video of videoDataArray) {
         const { id, link_txt, desc_txt } = video;
-        const embedLink = link_txt.replace(
-          "https://www.youtube.com/watch?v=",
-          "https://www.youtube.com/embed/"
-        );
+
+        let embedLink = link_txt;
+        if (link_txt.includes("youtube.com/watch?v=")) {
+          const videoId = new URL(link_txt).searchParams.get("v");
+          embedLink = `https://www.youtube-nocookie.com/embed/${videoId}`;
+        } else if (link_txt.includes("youtu.be/")) {
+          const videoId = link_txt.split("/").pop().split("?")[0];
+          embedLink = `https://www.youtube-nocookie.com/embed/${videoId}`;
+        } else if (!link_txt.includes("/embed/")) {
+          // If it's neither a standard YouTube link nor already an embed link
+          embedLink = link_txt;
+        }
 
         const { data: existingVideoData, error: checkVideoError } =
           await supabase
@@ -240,12 +248,10 @@ async function handlePost(req, res) {
     });
   } catch (error) {
     console.error("Error updating/inserting data:", error);
-    return res
-      .status(500)
-      .json({
-        error: `Error updating/inserting data: ${error.message}`,
-        details: error,
-      });
+    return res.status(500).json({
+      error: `Error updating/inserting data: ${error.message}`,
+      details: error,
+    });
   }
 }
 async function handlePut(req, res) {
