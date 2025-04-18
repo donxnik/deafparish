@@ -8,6 +8,7 @@ import e3 from "../images/e3.jpg";
 import e4 from "../images/e4.jpg";
 import e5 from "../images/e5.jpg";
 import e6 from "../images/e6.jpg";
+import e7 from "../images/e7.jpg";
 import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
@@ -33,7 +34,7 @@ function formatTextWithRedTime(text) {
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [expandedDays, setExpandedDays] = useState([]);
-  const images = [e1, e2, e3, e4, e5, e6];
+  const images = [e1, e2, e3, e4, e5, e6, e7];
   const {
     weekData = [],
     auditoriumData = [],
