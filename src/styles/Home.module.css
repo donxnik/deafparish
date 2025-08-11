@@ -293,10 +293,10 @@
 
 .week_calendar_vineyard {
   position: absolute;
-  top: -40px;
-  left: -30px;
-  width: 300px;
-  height: 300px;
+  top: -55px;
+  left: -40px;
+  width: 400px;
+  height: 540px;
   background-image: url(../images/vineyard.png);
   background-repeat: no-repeat;
   background-size: contain;
@@ -891,6 +891,10 @@
     gap: 10px;
   }
 
+  .week_calendar {
+    margin-bottom: 40px; /* Adds spacing below week_calendar on mobile */
+  }
+
   .maturityOrnament {
     width: 250px !important; /* Adjust this value as needed for small screens; use !important to override if necessary */
   }
@@ -988,10 +992,7 @@
   }
 
   .week_calendar_vineyard {
-    width: 240px;
-    height: 240px;
-    top: -45px;
-    left: -35px;
+    opacity: 0;
   }
 
   .auditorium_vineyard {
@@ -1228,7 +1229,6 @@
 @media (min-width: 701px) and (max-width: 1120px) {
   .headerTitle {
     font-size: 24px;
-    margin-bottom: 40px;
   }
 
   .maturityOrnament {
