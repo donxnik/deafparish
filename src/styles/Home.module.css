@@ -92,7 +92,7 @@
   height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1); /* Updated to match auditorium shadow */
   position: absolute;
   top: 0;
   left: 0;
@@ -107,6 +107,13 @@
 .headerTitle {
   content: url(../images/titleLogo2.png);
   width: 60%;
+  margin-bottom: 40px;
+}
+
+.maturityOrnament {
+  width: 350px !important; /* Ensure override for desktop */
+  height: auto !important;
+  max-width: 100%;
 }
 
 /* Slideshow container */
@@ -176,6 +183,7 @@
   max-width: 90%; /* Responsive scaling */
   margin: 0 auto;
   overflow: visible;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1); /* Added shadow like auditorium */
 }
 
 .week_calendar_inner {
@@ -883,6 +891,10 @@
     gap: 10px;
   }
 
+  .maturityOrnament {
+    width: 250px !important; /* Adjust this value as needed for small screens; use !important to override if necessary */
+  }
+
   .leftColumn,
   .rightColumn,
   .bottomRow,
@@ -1216,6 +1228,11 @@
 @media (min-width: 701px) and (max-width: 1120px) {
   .headerTitle {
     font-size: 24px;
+  }
+
+  .maturityOrnament {
+    width: 350px !important; /* Adjust this value as needed for desktop */
+    height: auto !important;
   }
 
   .week_calendar {

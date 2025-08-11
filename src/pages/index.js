@@ -9,6 +9,7 @@ import e4 from "../images/e4.jpg";
 import e5 from "../images/e5.jpg";
 import e6 from "../images/e6.jpg";
 import e7 from "../images/e7.jpg";
+import maturityIMG from "../images/maturity.png";
 import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
@@ -116,37 +117,7 @@ export default function Home({ data = {} }) {
         </div>
         <div className={styles.contentWrapper}>
           <div className={styles.headerTitle}>ივერიის ღვთისმშობლის ტაძარი</div>
-          <div className={styles.slideshow}>
-            {images.map((image, index) => (
-              <div
-                key={index}
-                className={`${styles.slide} ${
-                  index === currentSlide ? styles.active : ""
-                }`}
-              >
-                <Image
-                  src={image}
-                  alt={`header slide ${index + 1}`}
-                  className={styles.centeredImage}
-                  width={1200}
-                  height={600}
-                  priority={index === 0}
-                  quality={75}
-                />
-              </div>
-            ))}
-            <div className={styles.dotsContainer}>
-              {images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`${styles.dot} ${
-                    index === currentSlide ? styles.active : ""
-                  }`}
-                  onClick={() => goToSlide(index)}
-                ></div>
-              ))}
-            </div>
-          </div>
+
           <div className={styles.week_calendar}>
             <div className={styles.week_calendar_vineyard}></div>
             <div className={styles.week_calendar_inner}>
@@ -242,6 +213,51 @@ export default function Home({ data = {} }) {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className={styles.ornamentContainer}>
+            <Image
+              src={maturityIMG}
+              alt="Maturity ornament"
+              width={350} /* Update this to match the CSS width */
+              height={
+                350
+              } /* This is for aspect ratio; actual height will be auto */
+              className={`${styles.ornamentImage} ${styles.maturityOrnament}`}
+            />
+          </div>
+
+          <div className={styles.slideshow}>
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className={`${styles.slide} ${
+                  index === currentSlide ? styles.active : ""
+                }`}
+              >
+                <div className={styles.slideImageWrapper}>
+                  <Image
+                    src={image}
+                    alt={`header slide ${index + 1}`}
+                    fill={true}
+                    className={styles.centeredImage}
+                    priority={index === 0}
+                    quality={75}
+                  />
+                </div>
+              </div>
+            ))}
+            <div className={styles.dotsContainer}>
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`${styles.dot} ${
+                    index === currentSlide ? styles.active : ""
+                  }`}
+                  onClick={() => goToSlide(index)}
+                ></div>
+              ))}
             </div>
           </div>
 
