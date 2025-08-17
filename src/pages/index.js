@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import auditoriumIMG from "../images/clasroom.jpg";
 import e1 from "../images/e1.jpg";
-import e2 from "../images/e2.jpg";
+import e2 from "../images/e2.jpeg";
 import e3 from "../images/e3.jpg";
 import e4 from "../images/e4.jpg";
 import e5 from "../images/e5.jpg";
