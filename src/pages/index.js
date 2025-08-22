@@ -13,7 +13,8 @@ import maturityIMG from "../images/maturity.png";
 import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
-import calendarIMG from "../images/calendar.png"; // <-- დაემატა კალენდრის სურათი
+import calendarIMG from "../images/calendar.png";
+import sazuIMG from "../images/sazu.png";
 import { useState, useEffect } from "react";
 
 function formatTextWithRedTime(text) {
@@ -329,7 +330,7 @@ export default function Home({ data = {} }) {
             ))}
           </div>
 
-          {/* ----- დამატებული ბლოკი ----- */}
+          {/* ----- დამატებული ბლოკი აპლიკაცია 1----- */}
           <div className={styles.appDownloadContainer}>
             <a
               href="https://play.google.com/store/apps/details?id=geo.orthodox.calendar&hl=en"
@@ -354,6 +355,66 @@ export default function Home({ data = {} }) {
                 </p>
               </div>
             </a>
+          </div>
+          {/* ----- დასასრული ----- */}
+
+          {/* ----- დამატებული ბლოკი: საზუ (Android და iOS) ----- */}
+          <div className={styles.appsWrapper}>
+            {/* --- საზუ: Android --- */}
+            <div
+              className={`${styles.appDownloadContainer} ${styles.androidApp}`}
+            >
+              <a
+                href="https://play.google.com/store/apps/details?id=ge.sazu&hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.appDownloadLink}
+              >
+                <div className={styles.appDownloadImage}>
+                  <Image
+                    src={sazuIMG}
+                    alt="Sazu Patriarchate App on Android"
+                    width={100}
+                    height={100}
+                  />
+                </div>
+                <div className={styles.appDownloadContent}>
+                  <h1 className={styles.appDownloadTitle}>
+                    საპატრიარქოს საზუ Android
+                  </h1>
+                  <p className={styles.appDownloadSubtitle}>
+                    გადმოწერეთ აპლიკაცია ანდროიდზე.
+                  </p>
+                </div>
+              </a>
+            </div>
+
+            {/* --- საზუ: iOS --- */}
+            <div className={`${styles.appDownloadContainer} ${styles.iosApp}`}>
+              <a
+                href="https://apps.apple.com/ph/app/sazu-patriarchate/id6504517690"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.appDownloadLink}
+              >
+                <div className={styles.appDownloadImage}>
+                  <Image
+                    src={sazuIMG}
+                    alt="Sazu Patriarchate App on iOS"
+                    width={100}
+                    height={100}
+                  />
+                </div>
+                <div className={styles.appDownloadContent}>
+                  <h1 className={styles.appDownloadTitle}>
+                    საპატრიარქოს საზუ iOS
+                  </h1>
+                  <p className={styles.appDownloadSubtitle}>
+                    გადმოწერეთ აპლიკაცია აიოსზე.
+                  </p>
+                </div>
+              </a>
+            </div>
           </div>
           {/* ----- დასასრული ----- */}
 
