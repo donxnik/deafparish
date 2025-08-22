@@ -13,6 +13,7 @@ import maturityIMG from "../images/maturity.png";
 import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
+import calendarIMG from "../images/calendar.png"; // <-- დაემატა კალენდრის სურათი
 import { useState, useEffect } from "react";
 
 function formatTextWithRedTime(text) {
@@ -327,6 +328,35 @@ export default function Home({ data = {} }) {
               </div>
             ))}
           </div>
+
+          {/* ----- დამატებული ბლოკი ----- */}
+          <div className={styles.appDownloadContainer}>
+            <a
+              href="https://play.google.com/store/apps/details?id=geo.orthodox.calendar&hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.appDownloadLink}
+            >
+              <div className={styles.appDownloadImage}>
+                <Image
+                  src={calendarIMG}
+                  alt="Orthodox Calendar App"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <div className={styles.appDownloadContent}>
+                <h1 className={styles.appDownloadTitle}>
+                  საეკლესიო კალენდარი ანდროიდზე
+                </h1>
+                <p className={styles.appDownloadSubtitle}>
+                  გადმოწერეთ აპლიკაცია
+                </p>
+              </div>
+            </a>
+          </div>
+          {/* ----- დასასრული ----- */}
+
           <div className={styles.contact_container}>
             <div className={styles.contact_title}>
               <h1>საკონტაქტო ინფორმაცია</h1>
@@ -375,15 +405,14 @@ export default function Home({ data = {} }) {
                     className={styles.btn_maps}
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://maps.app.goo.gl/bpTrjstmHAvTCNxx8"
+                    href="https://maps.app.goo.gl/WSd9qPDiV51P5C6s8"
                   >
                     <span className={styles.google_G}>G</span>
                     <span className={styles.google_O1}>O</span>
                     <span className={styles.google_O2}>O</span>
                     <span className={styles.google_G}>G</span>
                     <span className={styles.google_L}>L</span>
-                    <span className={styles.google_E}>E</span>
-                    &nbsp;
+                    <span className={styles.google_E}>E</span> 
                     <span className={styles.maps_M}>M</span>
                     <span className={styles.maps_A}>A</span>
                     <span className={styles.maps_P}>P</span>

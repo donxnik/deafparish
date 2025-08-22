@@ -430,6 +430,65 @@
   line-height: 1.6;
 }
 
+/* Auditorium p styles */
+.auditorium p {
+  color: #555;
+  margin-top: 25px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* App Download Section Styles */
+.appDownloadContainer {
+  width: 100%;
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.appDownloadLink {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background-color: #f8f5f0;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+.appDownloadLink:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.appDownloadImage {
+  flex-shrink: 0;
+}
+
+.appDownloadImage img {
+  border-radius: 15px;
+}
+
+.appDownloadContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.appDownloadTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.appDownloadSubtitle {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
 /* Contact section */
 .contact_container {
   padding: 80px 0 0 0;
@@ -1217,6 +1276,29 @@
 }
 
 @media (max-width: 600px) {
+  .appDownloadLink {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .appDownloadTitle {
+    font-size: 22px;
+  }
+
+  .appDownloadSubtitle {
+    font-size: 14px;
+  }
+
+  .videoBlock {
+    flex: 0 0 100%;
+  }
+
+  .videoDescription {
+    font-size: 16px;
+  }
+
   .videoBlock {
     flex: 0 0 100%;
   }
