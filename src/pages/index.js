@@ -88,6 +88,7 @@ export default function Home({ data = {} }) {
           <div className={styles.headerTitle}>ივერიის ღვთისმშობლის ტაძარი</div>
           <div className={styles.week_calendar}>
             <div className={styles.week_calendar_vineyard}></div>
+            <div className={styles.week_calendar_vineyard_right}></div>
             <div className={styles.week_calendar_inner}>
               {[
                 ["ორშაბათი", "ოთხშაბათი", "პარასკევი"],
@@ -102,8 +103,20 @@ export default function Home({ data = {} }) {
                   {column.map((dayName) => {
                     const dayInfo = dayNamesMap[dayName];
                     const scheduleItem = scheduleMap[dayName];
+                    // განსაზღვრეთ order ატრიბუტი
+                    let order;
+                    if (dayName === "ორშაბათი") order = 1;
+                    if (dayName === "სამშაბათი") order = 2;
+                    if (dayName === "ოთხშაბათი") order = 3;
+                    if (dayName === "ხუთშაბათი") order = 5;
+                    if (dayName === "პარასკევი") order = 6;
+                    if (dayName === "შაბათი") order = 7;
                     return (
-                      <div key={dayInfo.key} className={styles.week_day_item}>
+                      <div
+                        key={dayInfo.key}
+                        className={styles.week_day_item}
+                        data-day-order={order}
+                      >
                         <h1 onClick={() => toggleExpand(dayInfo.key)}>
                           {dayInfo.name}
                         </h1>
@@ -126,7 +139,7 @@ export default function Home({ data = {} }) {
                   })}
                 </div>
               ))}
-              <div className={styles.iveria_image}>
+              <div className={styles.iveria_image} data-day-order="4">
                 <Image
                   src={iveriaIMG}
                   alt="Iveria Icon"
@@ -136,7 +149,10 @@ export default function Home({ data = {} }) {
                   className={styles.rounded_image}
                 />
               </div>
-              <div className={`${styles.week_day} ${styles.bottomRow}`}>
+              <div
+                className={`${styles.week_day} ${styles.bottomRow}`}
+                data-day-order="8"
+              >
                 <div className={styles.week_day_item}>
                   <h1 onClick={() => toggleExpand(dayNamesMap["კვირა"].key)}>
                     {dayNamesMap["კვირა"].name}
