@@ -1140,15 +1140,18 @@
     right: -160px;
   }
 
-  .leftAngel,
-  .rightAngel {
-    top: 110px;
+  .leftAngel {
+    top: 73px;
+    left: -40px;
     width: 200px;
     animation: levitate 6.5s ease-in-out infinite;
   }
 
   .rightAngel {
-    animation-delay: 0.5s;
+    top: 73px;
+    right: -40px;
+    width: 200px;
+    animation: levitate 6.5s ease-in-out infinite;
   }
 
   .dot {
