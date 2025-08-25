@@ -80,8 +80,7 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
     };
 
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
       const res = await fetch(`${baseUrl}/api/main_database`, {
         method: "POST",
         body: JSON.stringify(formData),
@@ -107,8 +106,7 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
     }
 
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
       const method = id ? "PUT" : "POST";
       const url = `${baseUrl}/api/main_database`;
       const requestBody = id
@@ -152,8 +150,7 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
   const handleDeleteSermon = async (id) => {
     if (!confirm("დარწმუნებული ხართ, რომ გსურთ წაშლა?")) return;
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
       const res = await fetch(`${baseUrl}/api/main_database`, {
         method: "DELETE",
         body: JSON.stringify({ id }),
@@ -348,7 +345,7 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
 
 export async function getServerSideProps() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/main_database`);
     const result = await response.json();
 
