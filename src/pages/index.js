@@ -91,8 +91,8 @@ export default function Home({ data = {} }) {
             <div className={styles.week_calendar_vineyard_right}></div>
             <div className={styles.week_calendar_inner}>
               {[
-                ["ორშაბათი", "ოთხშაბათი", "პარასკევი"],
-                ["სამშაბათი", "ხუთშაბათი", "შაბათი"],
+                ["ორშაბათი", "სამშაბათი", "ოთხშაბათი"],
+                ["ხუთშაბათი", "პარასკევი", "შაბათი"],
               ].map((column, colIndex) => (
                 <div
                   key={colIndex}
