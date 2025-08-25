@@ -981,6 +981,14 @@
   overflow: visible; /* Ensure no clipping */
 }
 
+.updated_date {
+  display: block; /* რომ ტექსტის ქვემოთ, ახალ ხაზზე გამოჩნდეს */
+  margin-top: 8px; /* დაშორება ზედა ტექსტიდან */
+  font-size: 0.8rem; /* მცირე ზომის შრიფტი */
+  color: #888888; /* ნაცრისფერი */
+  font-style: italic; /* დახრილი (Italic) */
+}
+
 /* Responsive styles */
 @media (max-width: 700px) {
   .week_calendar_inner {
