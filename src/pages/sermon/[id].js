@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import Link from "next/link"; // Add this for navigation links
 
 const supabaseUrl = "https://dhltebqfqcfkzqxbeaju.supabase.co";
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Sermon({ sermon, allSermons }) {
