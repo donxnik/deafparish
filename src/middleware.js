@@ -35,19 +35,27 @@ export async function middleware(req) {
 
   console.log(`Attempting to insert for IP hash: ${ip_hash}`);
 
-  // დროებით ვიყენებთ await-ს, რომ შეცდომა დავიჭიროთ
-  const { data, error } = await supabase.from("page_views").insert({
-    path: pathname,
-    ip_hash,
-    user_agent: userAgent,
-    country,
-    city,
-  });
+  // ვიყენებთ upsert-ს დუბლიკატების თავიდან ასაცილებლად
+  const { data, error } = await supabase.from("page_views").upsert(
+    {
+      path: pathname,
+      ip_hash,
+      user_agent: userAgent,
+      country,
+      city,
+      // visit_date ავტომატურად შეივსება ბაზაში DEFAULT CURRENT_DATE-ით
+    },
+    {
+      onConflict: "ip_hash,visit_date", // ვუთითებთ, რომელი სვეტების კონფლიქტი დააიგნოროს
+      ignoreDuplicates: true,
+    }
+  );
 
   if (error) {
-    console.error("SUPABASE MIDDLEWARE INSERT ERROR:", error);
+    // მოსალოდნელია, რომ onConflict-ის გამო შეცდომა არ იქნება, მაგრამ მაინც ვტოვებთ
+    console.error("SUPABASE MIDDLEWARE UPSERT ERROR:", error);
   } else {
-    console.log("SUPABASE INSERT SUCCESS:", data);
+    console.log("SUPABASE UPSERT:", data); // წარმატების შემთხვევაში, null-ს დააბრუნებს
   }
   // --- END DEBUGGING ---
 

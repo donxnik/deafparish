@@ -447,7 +447,7 @@ export async function getServerSideProps() {
     });
   }
   try {
-    const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/main_database`);
     const result = await response.json();
     if (!response.ok || result.error) {
