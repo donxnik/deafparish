@@ -338,7 +338,7 @@ export default function Home({ data = {} }) {
             className={`${styles.appDownloadContainer} ${styles.calendarApp}`}
           >
             <a
-              href="https://play.google.com/store/apps/details?id=com.levan.churchcalendar"
+              href="https://play.google.com/store/apps/details?id=geo.orthodox.calendar&hl=ka"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.appDownloadLink}
