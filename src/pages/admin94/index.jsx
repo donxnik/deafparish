@@ -80,8 +80,8 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
     };
 
     try {
-      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/api/main_database`, {
+      // FIX: Using relative path for API call
+      const res = await fetch(`/api/main_database`, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: { "Content-Type": "application/json" },
@@ -106,9 +106,9 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
     }
 
     try {
-      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
+      // FIX: Using relative path for API call
       const method = id ? "PUT" : "POST";
-      const url = `${baseUrl}/api/main_database`;
+      const url = `/api/main_database`;
       const requestBody = id
         ? { id, title_post, sermon_text }
         : { newSermon: { title_post, sermon_text } };
@@ -150,8 +150,8 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
   const handleDeleteSermon = async (id) => {
     if (!confirm("დარწმუნებული ხართ, რომ გსურთ წაშლა?")) return;
     try {
-      const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/api/main_database`, {
+      // FIX: Using relative path for API call
+      const res = await fetch(`/api/main_database`, {
         method: "DELETE",
         body: JSON.stringify({ id }),
         headers: { "Content-Type": "application/json" },
@@ -206,7 +206,6 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
             </div>
           ))}
 
-          {/* ... დანარჩენი ფორმა იგივეა ... */}
           <h2>აუდიტორიის აღწერა</h2>
           <div className={styles.input_field}>
             <label className={styles.day_label}>
@@ -345,7 +344,8 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
 
 export async function getServerSideProps() {
   try {
-    const baseUrl = process.env.SUPABASE_URL || "http://localhost:3000";
+    // FIX: Using the correct environment variable for the API call on the server
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/main_database`);
     const result = await response.json();
 
@@ -357,7 +357,6 @@ export async function getServerSideProps() {
 
     const { data } = result;
 
-    // ვქმნით სრულ 7-დღიან მასივს, რათა ფორმა ყოველთვის სწორად გამოჩნდეს
     const fullSchedule = ALL_WEEK_DAYS.map((dayName, index) => {
       const existingDay = data.scheduleData?.find(
         (d) => d.day_name === dayName
@@ -372,10 +371,17 @@ export async function getServerSideProps() {
       );
     });
 
+    // FIX: Ensuring videoData always has 3 elements for the form
+    const fullVideoData = [0, 1, 2].map((index) => {
+      return (
+        data.videoData?.[index] || { id: index + 1, link_txt: "", desc_txt: "" }
+      );
+    });
+
     const initialValues = {
       scheduleData: fullSchedule,
-      auditoriumData: data.auditoriumData?.[0] || {},
-      videoData: data.videoData || [],
+      auditoriumData: data.auditoriumData?.[0] || { title: "", desc: "" },
+      videoData: fullVideoData,
     };
 
     return {
@@ -386,7 +392,7 @@ export async function getServerSideProps() {
     };
   } catch (error) {
     console.error("Error in Admin getServerSideProps:", error.message);
-    // შეცდომის შემთხვევაშიც ვაბრუნებთ ცარიელ, მაგრამ სრულ სტრუქტურას
+
     const fallbackSchedule = ALL_WEEK_DAYS.map((dayName, index) => ({
       id: index + 1,
       day_name: dayName,
@@ -394,12 +400,18 @@ export async function getServerSideProps() {
       event_time: "",
     }));
 
+    const fallbackVideoData = [
+      { id: 1, link_txt: "", desc_txt: "" },
+      { id: 2, link_txt: "", desc_txt: "" },
+      { id: 3, link_txt: "", desc_txt: "" },
+    ];
+
     return {
       props: {
         initialValues: {
           scheduleData: fallbackSchedule,
-          auditoriumData: {},
-          videoData: [],
+          auditoriumData: { title: "", desc: "" },
+          videoData: fallbackVideoData,
         },
         initialSermons: [],
       },

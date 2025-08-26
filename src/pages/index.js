@@ -216,6 +216,21 @@ export default function Home({ data = {} }) {
               ))}
             </div>
           </div>
+          <div className={styles.videoContainer}>
+            {videoData.map((video, index) => (
+              <div key={index} className={styles.videoBlock}>
+                <iframe
+                  className={styles.videoFrame}
+                  src={video.link_txt}
+                  frameBorder="0"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+                <p className={styles.videoDescription}>{video.desc_txt}</p>
+              </div>
+            ))}
+          </div>
           <div className={styles.auditorium}>
             <div className={styles.auditorium_vineyard}></div>
             <div className={styles.auditorium_image}>
@@ -263,21 +278,7 @@ export default function Home({ data = {} }) {
               </div>
             )}
           </div>
-          <div className={styles.videoContainer}>
-            {videoData.map((video, index) => (
-              <div key={index} className={styles.videoBlock}>
-                <iframe
-                  className={styles.videoFrame}
-                  src={video.link_txt}
-                  frameBorder="0"
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-                <p className={styles.videoDescription}>{video.desc_txt}</p>
-              </div>
-            ))}
-          </div>
+
           <div className={styles.appDownloadContainer}>
             <a
               href="https://play.google.com/store/apps/details?id=geo.orthodox.calendar&hl=en"
