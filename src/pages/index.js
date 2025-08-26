@@ -243,7 +243,7 @@ export default function Home({ data = {} }) {
           {sazuPosts && sazuPosts.length > 0 && (
             <div className={styles.sazuContainer}>
               <div className={styles.sazuHeader}>
-                <h2>საპატრიარქოს უწყებანი</h2>
+                <h2>სიახლეები</h2>
                 <a
                   href="https://sazu.ge/posts/index/36/"
                   target="_blank"
