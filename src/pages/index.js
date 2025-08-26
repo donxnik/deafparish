@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import auditoriumIMG from "../images/clasroom.jpg";
 import e1 from "../images/e1.jpg";
@@ -27,6 +28,12 @@ function formatTextWithRedTime(text) {
   return <span dangerouslySetInnerHTML={{ __html: formattedText }} />;
 }
 
+// თარიღის ფორმატირების ახალი ფუნქცია
+function formatSazuDate(dateString) {
+  if (!dateString) return "";
+  return dateString.replace(/\//g, ".");
+}
+
 export default function Home({ data = {} }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [expandedDays, setExpandedDays] = useState([]);
@@ -36,6 +43,7 @@ export default function Home({ data = {} }) {
     auditoriumData = [],
     videoData = [],
     blogData = [],
+    sazuPosts = [],
   } = data;
 
   const scheduleMap = scheduleData.reduce((acc, day) => {
@@ -103,7 +111,6 @@ export default function Home({ data = {} }) {
                   {column.map((dayName) => {
                     const dayInfo = dayNamesMap[dayName];
                     const scheduleItem = scheduleMap[dayName];
-                    // განსაზღვრეთ order ატრიბუტი
                     let order;
                     if (dayName === "ორშაბათი") order = 1;
                     if (dayName === "სამშაბათი") order = 2;
@@ -216,6 +223,7 @@ export default function Home({ data = {} }) {
               ))}
             </div>
           </div>
+
           <div className={styles.videoContainer}>
             {videoData.map((video, index) => (
               <div key={index} className={styles.videoBlock}>
@@ -231,6 +239,55 @@ export default function Home({ data = {} }) {
               </div>
             ))}
           </div>
+
+          {/* --- SAZU.GE-ს პოსტების სექცია --- */}
+          {sazuPosts && sazuPosts.length > 0 && (
+            <div className={styles.sazuContainer}>
+              <div className={styles.sazuHeader}>
+                <h2>საპატრიარქოს უწყებანი</h2>
+                {/* --- შესწორება: ლინკი განახლებულია --- */}
+                <a
+                  href="https://sazu.ge/posts/index/36/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.sazuViewAll}
+                >
+                  ყველას ნახვა
+                </a>
+              </div>
+              <div className={styles.sazuGrid}>
+                {/* --- შესწორება: .slice(0, 4) მოშორებულია, რომ ყველა პოსტი გამოჩნდეს --- */}
+                {sazuPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    href={`/sazu/${post.id}?cat_id=${post.cat_id}`}
+                    className={styles.sazuPostCard}
+                  >
+                    <div className={styles.sazuPostImageContainer}>
+                      <Image
+                        src={post.photo}
+                        alt={post.name}
+                        layout="fill"
+                        objectFit="cover"
+                        className={styles.sazuPostImage}
+                      />
+                    </div>
+                    <div className={styles.sazuPostContent}>
+                      <h3 className={styles.sazuPostTitle}>{post.name}</h3>
+                      <div>
+                        <p className={styles.sazuPostDate}>
+                          {formatSazuDate(post.date)}
+                        </p>
+                        <span className={styles.sazuReadMore}>სრულად</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* --- SAZU.GE-ს სექციის დასასრული --- */}
+
           <div className={styles.auditorium}>
             <div className={styles.auditorium_vineyard}></div>
             <div className={styles.auditorium_image}>
@@ -277,32 +334,6 @@ export default function Home({ data = {} }) {
                 </p>
               </div>
             )}
-          </div>
-
-          <div className={styles.appDownloadContainer}>
-            <a
-              href="https://play.google.com/store/apps/details?id=geo.orthodox.calendar&hl=en"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.appDownloadLink}
-            >
-              <div className={styles.appDownloadImage}>
-                <Image
-                  src={calendarIMG}
-                  alt="Orthodox Calendar App"
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <div className={styles.appDownloadContent}>
-                <h1 className={styles.appDownloadTitle}>
-                  საეკლესიო კალენდარი ანდროიდზე
-                </h1>
-                <p className={styles.appDownloadSubtitle}>
-                  გადმოწერეთ აპლიკაცია
-                </p>
-              </div>
-            </a>
           </div>
           <div className={styles.appsWrapper}>
             <div
@@ -449,26 +480,40 @@ export async function getServerSideProps() {
   }
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/main_database`);
-    const result = await response.json();
-    if (!response.ok || result.error) {
+
+    const [mainResponse, sazuResponse] = await Promise.all([
+      fetch(`${baseUrl}/api/main_database`),
+      fetch(`https://sazu.ge/api/posts/36`).catch((e) => {
+        console.error("Sazu API fetch failed:", e);
+        return null;
+      }),
+    ]);
+
+    const mainResult = await mainResponse.json();
+    if (!mainResponse.ok || mainResult.error) {
       throw new Error(
-        result.error || `API request failed with status: ${response.status}`
+        mainResult.error ||
+          `API request failed with status: ${mainResponse.status}`
       );
     }
-
-    const processedScheduleData = result.data?.scheduleData.map((day) => ({
+    const processedScheduleData = mainResult.data?.scheduleData.map((day) => ({
       ...day,
       updated_formatted: formatUpdateDate(day.updated_at),
     }));
+
+    let sazuPosts = [];
+    if (sazuResponse && sazuResponse.ok) {
+      sazuPosts = await sazuResponse.json();
+    }
 
     return {
       props: {
         data: {
           scheduleData: processedScheduleData || [],
-          auditoriumData: result.data?.auditoriumData || [],
-          videoData: result.data?.videoData || [],
-          blogData: result.data?.blogData || [],
+          auditoriumData: mainResult.data?.auditoriumData || [],
+          videoData: mainResult.data?.videoData || [],
+          blogData: mainResult.data?.blogData || [],
+          sazuPosts: sazuPosts,
         },
       },
     };
@@ -481,6 +526,7 @@ export async function getServerSideProps() {
           auditoriumData: [],
           videoData: [],
           blogData: [],
+          sazuPosts: [],
         },
       },
     };

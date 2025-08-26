@@ -1,0 +1,89 @@
+.postContainer {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.postContainer h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.postDate {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 30px;
+  display: block;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+/* --- დამატებულია: მთავარი სურათის სტილი --- */
+.mainImageContainer {
+  width: 100%;
+  margin-bottom: 30px;
+  border-radius: 12px;
+  overflow: hidden; /* სურათს კუთხეებს მოუმრგვალებს */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* სტილები პოსტის შიგთავსისთვის */
+.postContainer p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* --- განახლებულია: სურათების და ვიდეოების სტილები --- */
+/* :global() ნიშნავს, რომ ეს სტილები იმოქმედებს dangerouslySetInnerHTML-ით ჩასმულ ელემენტებზე */
+.postContainer :global(img),
+.postContainer :global(iframe) {
+  display: block; /* ცენტრში მოსათავსებლად */
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 30px auto; /* ვერტიკალური დაშორება და ჰორიზონტალური ცენტრირება */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: none; /* iframe-ის ჩარჩოს მოშორება */
+}
+
+.postContainer :global(iframe) {
+  /* ვიდეოებს ვანიჭებთ 16:9 პროპორციას */
+  aspect-ratio: 16/9;
+  width: 100%; /* ვიდეო იკავებს კონტეინერის სრულ სიგანეს */
+}
+
+/* --- დამატებულია: "უკან დაბრუნების" ღილაკის სტილები --- */
+.backButtonContainer {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}

@@ -1010,6 +1010,123 @@
   font-style: italic; /* დახრილი (Italic) */
 }
 
+/* --- Sazu.ge Posts Section --- */
+.sazuContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 0 20px;
+}
+
+.sazuHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.sazuHeader h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.sazuViewAll {
+  font-size: 16px;
+  font-weight: 600;
+  color: #7fc540;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.sazuViewAll:hover {
+  color: #5fa330;
+}
+
+.sazuGrid {
+  display: flex; /* ვიყენებთ flex-ს ჰორიზონტალური სქროლისთვის */
+  overflow-x: auto; /* ვამატებთ ჰორიზონტალურ სქროლს */
+  flex-wrap: nowrap; /* ვკრძალავთ ელემენტების ქვემოთ ჩამოტანას */
+  padding-bottom: 20px; /* სქროლისთვის ადგილის გამოყოფა */
+  -webkit-overflow-scrolling: touch; /* გლუვი სქროლი მობილურზე */
+}
+
+/* სქროლის დიზაინი (არასავალდებულო, მაგრამ ალამაზებს) */
+.sazuGrid::-webkit-scrollbar {
+  height: 8px;
+}
+.sazuGrid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.sazuGrid::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.sazuGrid::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.sazuPostCard {
+  flex: 0 0 300px; /* თითოეული ბარათის სიგანე ფიქსირებულია (300px) */
+  margin-right: 20px; /* დაშორება ბარათებს შორის */
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sazuPostCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.sazuPostImageContainer {
+  width: 100%;
+  position: relative;
+  padding-top: 65%; /* სურათის პროპორცია */
+}
+
+.sazuPostContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.sazuPostTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px 0;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+.sazuPostDate {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.sazuReadMore {
+  font-size: 15px;
+  font-weight: 700;
+  color: #7fc540;
+  text-decoration: none;
+}
+
+/* --- End of Sazu.ge Posts Section --- */
+
 /* Responsive styles */
 @media (max-width: 700px) {
   .week_calendar_inner {
@@ -1368,6 +1485,10 @@
   .sermonSidebar {
     max-width: 100%;
   }
+
+  .sazuGrid {
+    grid-template-columns: repeat(2, 1fr); /* პლანშეტზე 2 პოსტი რიგში */
+  }
 }
 
 @media (max-width: 600px) {
@@ -1400,6 +1521,12 @@
 
   .videoDescription {
     font-size: 16px;
+  }
+  .sazuGrid {
+    grid-template-columns: 1fr; /* მობილურზე 1 პოსტი რიგში */
+  }
+  .sazuHeader h2 {
+    font-size: 28px;
   }
 }
 
