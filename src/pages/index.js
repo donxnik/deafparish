@@ -240,12 +240,10 @@ export default function Home({ data = {} }) {
             ))}
           </div>
 
-          {/* --- SAZU.GE-ს პოსტების სექცია --- */}
           {sazuPosts && sazuPosts.length > 0 && (
             <div className={styles.sazuContainer}>
               <div className={styles.sazuHeader}>
                 <h2>საპატრიარქოს უწყებანი</h2>
-                {/* --- შესწორება: ლინკი განახლებულია --- */}
                 <a
                   href="https://sazu.ge/posts/index/36/"
                   target="_blank"
@@ -256,7 +254,6 @@ export default function Home({ data = {} }) {
                 </a>
               </div>
               <div className={styles.sazuGrid}>
-                {/* --- შესწორება: .slice(0, 4) მოშორებულია, რომ ყველა პოსტი გამოჩნდეს --- */}
                 {sazuPosts.map((post) => (
                   <Link
                     key={post.id}
@@ -286,7 +283,6 @@ export default function Home({ data = {} }) {
               </div>
             </div>
           )}
-          {/* --- SAZU.GE-ს სექციის დასასრული --- */}
 
           <div className={styles.auditorium}>
             <div className={styles.auditorium_vineyard}></div>
@@ -335,7 +331,38 @@ export default function Home({ data = {} }) {
               </div>
             )}
           </div>
+
+          {/* --- აპლიკაციების სექცია --- */}
+          {/* --- დაბრუნებული კალენდრის ბლოკი --- */}
+          <div
+            className={`${styles.appDownloadContainer} ${styles.calendarApp}`}
+          >
+            <a
+              href="https://play.google.com/store/apps/details?id=com.levan.churchcalendar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.appDownloadLink}
+            >
+              <div className={styles.appDownloadImage}>
+                <Image
+                  src={calendarIMG}
+                  alt="Orthodox Calendar App"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <div className={styles.appDownloadContent}>
+                <h1 className={styles.appDownloadTitle}>
+                  მართლმადიდებლური კალენდარი
+                </h1>
+                <p className={styles.appDownloadSubtitle}>
+                  გადმოწერეთ აპლიკაცია
+                </p>
+              </div>
+            </a>
+          </div>
           <div className={styles.appsWrapper}>
+            {/* --- Sazu Android-ის ბლოკი --- */}
             <div
               className={`${styles.appDownloadContainer} ${styles.androidApp}`}
             >
@@ -363,6 +390,8 @@ export default function Home({ data = {} }) {
                 </div>
               </a>
             </div>
+
+            {/* --- Sazu iOS-ის ბლოკი --- */}
             <div className={`${styles.appDownloadContainer} ${styles.iosApp}`}>
               <a
                 href="https://apps.apple.com/ph/app/sazu-patriarchate/id6504517690"
@@ -389,6 +418,7 @@ export default function Home({ data = {} }) {
               </a>
             </div>
           </div>
+
           <div className={styles.contact_container}>
             <div className={styles.contact_title}>
               <h1>საკონტაქტო ინფორმაცია</h1>
