@@ -191,6 +191,26 @@ export default function Home({ data = {} }) {
               className={`${styles.ornamentImage} ${styles.maturityOrnament}`}
             />
           </div>
+
+          {/* --- START: NEWLY ADDED VIDEO SECTION --- */}
+          <div className={styles.newVideoSection}>
+            <h2 className={styles.newVideoTitle}>
+              მიძინება ყოვლადწმინდისა ღმრთისმშობელისა მარიამისა.
+            </h2>
+            <h3 className={styles.newVideoSubtitle}>ნაწილი პირველი.</h3>
+            <div className={styles.newVideoWrapper}>
+              <iframe
+                src="https://www.youtube.com/embed/fhh-aVQXc00"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className={styles.newVideoIframe}
+              ></iframe>
+            </div>
+          </div>
+          {/* --- END: NEWLY ADDED VIDEO SECTION --- */}
+
           <div className={styles.slideshow}>
             {images.map((image, index) => (
               <div

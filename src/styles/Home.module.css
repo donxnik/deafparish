@@ -1127,6 +1127,56 @@
 
 /* --- End of Sazu.ge Posts Section --- */
 
+/* --- START: Dormition Video Section Styles --- */
+.newVideoSection {
+  width: 100%;
+  max-width: 950px; /* გაიზარდა სიგანე ჩარჩოსთვის */
+  margin: 60px auto; /* გაიზარდა დაშორება სხვა ბლოკებისგან */
+  text-align: center;
+  padding: 40px; /* შიდა დაშორება ჩარჩოსა და კონტენტს შორის */
+  background-color: #ffffff; /* თეთრი ფონი */
+  border: 1px solid #e0e0e0; /* ღია ნაცრისფერი ჩარჩო */
+  border-radius: 12px; /* მომრგვალებული კუთხეები */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* მსუბუქი ჩრდილი */
+  box-sizing: border-box;
+  color: #000;
+}
+
+.newVideoSection {
+  padding: 20px;
+  margin: 40px auto;
+}
+
+.newVideoTitle {
+  font-size: 28px;
+}
+
+.newVideoSubtitle {
+  font-size: 20px;
+  margin-bottom: 20px;
+  padding-top: 15px;
+}
+
+.newVideoWrapper {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  background-color: #000;
+}
+
+.newVideoIframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* --- END: Dormition Video Section Styles --- */
+
 /* Responsive styles */
 @media (max-width: 700px) {
   .week_calendar_inner {
@@ -1406,6 +1456,14 @@
 
   .ornamentImage {
     width: 120px;
+  }
+
+  .newVideoTitle {
+    font-size: 28px;
+  }
+
+  .newVideoSubtitle {
+    font-size: 20px;
   }
 }
 
