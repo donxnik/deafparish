@@ -194,13 +194,11 @@ export default function Home({ data = {} }) {
 
           {/* --- START: NEWLY ADDED VIDEO SECTION --- */}
           <div className={styles.newVideoSection}>
-            <h2 className={styles.newVideoTitle}>
-              მიძინება ყოვლადწმინდისა ღმრთისმშობელისა მარიამისა.
-            </h2>
-            <h3 className={styles.newVideoSubtitle}>ნაწილი პირველი.</h3>
+            <h2 className={styles.newVideoTitle}>საკვირაო ქადაგება.</h2>
+            <h3 className={styles.newVideoSubtitle}>07-09-2025</h3>
             <div className={styles.newVideoWrapper}>
               <iframe
-                src="https://www.youtube.com/embed/fhh-aVQXc00"
+                src="https://www.youtube.com/embed/pJ5ryluvx2o?si=S4p5Jc8MWD67MidX"
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
