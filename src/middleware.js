@@ -1,11 +1,9 @@
-// middleware.js
+// src/middleware.js
+
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+// IP ჰეშირების ფუნქცია (შენი კოდიდან)
 async function hashIp(ip) {
   const encoder = new TextEncoder();
   const data = encoder.encode(ip);
@@ -15,49 +13,59 @@ async function hashIp(ip) {
 }
 
 export async function middleware(req) {
+  const res = NextResponse.next();
+
+  // --- მთავარი ცვლილება აქ არის ---
+  // ჩვენ პირდაპირ ვუთითებთ, რომელი ცვლადებიდან წაიკითხოს მისამართი და გასაღები
+  const supabase = createMiddlewareClient({ req, res });
+  // --- ცვლილების დასასრული ---
+
+  // ვიღებთ მიმდინარე სესიას
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const { pathname } = req.nextUrl;
 
-  if (
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico")
-  ) {
-    return NextResponse.next();
+  // ავთენტიფიკაციის ლოგიკა
+  if (!session && pathname.startsWith("/admin94")) {
+    const url = new URL("/login", req.url);
+    return NextResponse.redirect(url);
   }
 
-  // --- DEBUGGING ---
-  console.log(`Middleware is running for path: ${pathname}`);
+  // ანალიტიკის ლოგიკა (შენი არსებული კოდი)
+  const isAnalyticsPath =
+    !pathname.startsWith("/api") &&
+    !pathname.startsWith("/_next") &&
+    !pathname.includes(".") &&
+    pathname !== "/login";
 
-  const ip = req.ip ?? "127.0.0.1";
-  const userAgent = req.headers.get("user-agent");
-  const { country, city } = req.geo || {};
-  const ip_hash = await hashIp(ip);
+  if (isAnalyticsPath) {
+    try {
+      const ip = req.ip ?? "127.0.0.1";
+      const userAgent = req.headers.get("user-agent");
+      const { country, city } = req.geo || {};
+      const ip_hash = await hashIp(ip);
 
-  console.log(`Attempting to insert for IP hash: ${ip_hash}`);
-
-  // ვიყენებთ upsert-ს დუბლიკატების თავიდან ასაცილებლად
-  const { data, error } = await supabase.from("page_views").upsert(
-    {
-      path: pathname,
-      ip_hash,
-      user_agent: userAgent,
-      country,
-      city,
-      // visit_date ავტომატურად შეივსება ბაზაში DEFAULT CURRENT_DATE-ით
-    },
-    {
-      onConflict: "ip_hash,visit_date", // ვუთითებთ, რომელი სვეტების კონფლიქტი დააიგნოროს
-      ignoreDuplicates: true,
+      await supabase.from("page_views").upsert(
+        {
+          path: pathname,
+          ip_hash,
+          user_agent: userAgent,
+          country,
+          city,
+        },
+        { onConflict: "ip_hash,visit_date" }
+      );
+    } catch (error) {
+      console.error("Analytics Middleware Error:", error.message);
     }
-  );
-
-  if (error) {
-    // მოსალოდნელია, რომ onConflict-ის გამო შეცდომა არ იქნება, მაგრამ მაინც ვტოვებთ
-    console.error("SUPABASE MIDDLEWARE UPSERT ERROR:", error);
-  } else {
-    console.log("SUPABASE UPSERT:", data); // წარმატების შემთხვევაში, null-ს დააბრუნებს
   }
-  // --- END DEBUGGING ---
 
-  return NextResponse.next();
+  return res;
 }
+
+// config ნაწილი უცვლელია
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};

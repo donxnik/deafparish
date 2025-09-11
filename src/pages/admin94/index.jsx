@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import styles from "@/pages/admin94/admin.module.css";
 
 const ALL_WEEK_DAYS = [
@@ -12,6 +14,11 @@ const ALL_WEEK_DAYS = [
 ];
 
 export default function Admin({ initialValues = {}, initialSermons = [] }) {
+  // --- ავთენტიფიკაციისთვის საჭირო Hook-ები ---
+  const router = useRouter();
+  const [supabase] = useState(() => createPagesBrowserClient());
+
+  // --- მდგომარეობები (States) ---
   const [schedule, setSchedule] = useState(initialValues.scheduleData || []);
   const [otherValues, setOtherValues] = useState({
     auditoriumTitle: initialValues.auditoriumData?.title || "",
@@ -30,13 +37,18 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
   });
   const [sermons, setSermons] = useState(initialSermons);
   const [message, setMessage] = useState({ text: "", type: "" });
-
-  // --- State-ები გალერეისთვის ---
   const [galleryImageFiles, setGalleryImageFiles] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [galleryImages, setGalleryImages] = useState(
     initialValues.galleryImages || []
   );
+
+  // --- ფუნქციები ---
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const handleOtherChange = (e) => {
     const { name, value } = e.target;
@@ -55,6 +67,15 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
   const handleSermonChange = (e) => {
     const { name, value } = e.target;
     setSermonValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (event) => {
+    setGalleryImageFiles(event.target.files);
+  };
+
+  const showAndHideMessage = (text, type, duration = 5000) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), duration);
   };
 
   const handleSubmit = async (event) => {
@@ -92,42 +113,81 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
         headers: { "Content-Type": "application/json" },
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      setMessage({ text: "მონაცემები წარმატებით შეინახა!", type: "success" });
-      setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+      showAndHideMessage("მონაცემები წარმატებით შეინახა!", "success");
     } catch (error) {
-      setMessage({
-        text: "შეცდომა შენახვისას: " + error.message,
-        type: "error",
-      });
+      showAndHideMessage(`შეცდომა შენახვისას: ${error.message}`, "error");
     }
   };
 
   const handleSermonSubmit = async (event) => {
     event.preventDefault();
-    // ...
+    const method = sermonValues.id ? "PUT" : "POST";
+    const body = sermonValues.id
+      ? { ...sermonValues }
+      : {
+          newSermon: {
+            title_post: sermonValues.title_post,
+            sermon_text: sermonValues.sermon_text,
+          },
+        };
+
+    try {
+      const res = await fetch("/api/main_database", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+
+      if (sermonValues.id) {
+        setSermons(
+          sermons.map((s) => (s.id === sermonValues.id ? result.data : s))
+        );
+        showAndHideMessage("ქადაგება განახლდა!", "success");
+      } else {
+        setSermons([result.data, ...sermons]);
+        showAndHideMessage("ქადაგება დაემატა!", "success");
+      }
+      setSermonValues({ title_post: "", sermon_text: "", id: null });
+    } catch (error) {
+      showAndHideMessage(`შეცდომა: ${error.message}`, "error");
+    }
+  };
+
+  const handleEditSermon = (sermon) => {
+    setSermonValues({
+      id: sermon.id,
+      title_post: sermon.title_post,
+      sermon_text: sermon.sermon_text,
+    });
   };
 
   const handleDeleteSermon = async (id) => {
-    // ...
-  };
-
-  // --- გალერეის ფუნქციები ---
-  const handleFileChange = (event) => {
-    setGalleryImageFiles(event.target.files);
+    if (!confirm("დარწმუნებული ხართ, რომ გსურთ ქადაგების წაშლა?")) return;
+    try {
+      const res = await fetch("/api/main_database", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sermonId: id }),
+      });
+      if (!res.ok) throw new Error("წაშლა ვერ მოხერხდა");
+      setSermons(sermons.filter((s) => s.id !== id));
+      showAndHideMessage("ქადაგება წაიშალა!", "success");
+    } catch (error) {
+      showAndHideMessage(`შეცდომა: ${error.message}`, "error");
+    }
   };
 
   const handleGalleryUpload = async () => {
     if (!galleryImageFiles || galleryImageFiles.length === 0) {
-      setMessage({ text: "გთხოვთ, აირჩიოთ სურათი(ები)", type: "error" });
-      return;
+      return showAndHideMessage("გთხოვთ, აირჩიოთ სურათი(ები)", "error");
     }
-
     setIsUploading(true);
     setMessage({
       text: `${galleryImageFiles.length} სურათი იტვირთება...`,
       type: "success",
     });
-
     try {
       const uploadPromises = Array.from(galleryImageFiles).map(async (file) => {
         const formData = new FormData();
@@ -136,14 +196,12 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
           "upload_preset",
           process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
         );
-
         const cloudinaryRes = await fetch(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
           { method: "POST", body: formData }
         );
         const cloudinaryData = await cloudinaryRes.json();
         if (cloudinaryData.error) throw new Error(cloudinaryData.error.message);
-
         const res = await fetch(`/api/main_database`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -153,22 +211,15 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
         });
         const saveData = await res.json();
         if (!res.ok) throw new Error("URL-ის შენახვა ვერ მოხერხდა");
-
         return saveData.data;
       });
-
       const uploadedImages = await Promise.all(uploadPromises);
-
       setGalleryImages((prev) => [...prev, ...uploadedImages]);
-
       document.getElementById("gallery-file-input").value = "";
       setGalleryImageFiles(null);
-      setMessage({
-        text: "ყველა სურათი წარმატებით აიტვირთა!",
-        type: "success",
-      });
+      showAndHideMessage("ყველა სურათი წარმატებით აიტვირთა!", "success");
     } catch (error) {
-      setMessage({ text: `შეცდომა: ${error.message}`, type: "error" });
+      showAndHideMessage(`შეცდომა: ${error.message}`, "error");
     } finally {
       setIsUploading(false);
     }
@@ -176,20 +227,17 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
 
   const handleDeleteGalleryImage = async (id) => {
     if (!confirm("დარწმუნებული ხართ, რომ გსურთ სურათის წაშლა?")) return;
-
     try {
       const res = await fetch("/api/main_database", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ galleryImageId: id }),
       });
-
       if (!res.ok) throw new Error("წაშლა ვერ მოხერხდა");
-
       setGalleryImages((prev) => prev.filter((img) => img.id !== id));
-      setMessage({ text: "სურათი წაიშალა!", type: "success" });
+      showAndHideMessage("სურათი წაიშალა!", "success");
     } catch (error) {
-      setMessage({ text: `შეცდომა: ${error.message}`, type: "error" });
+      showAndHideMessage(`შეცდომა: ${error.message}`, "error");
     }
   };
 
@@ -197,6 +245,16 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
     <div className={styles.bodyForm}>
       <div className={styles.wrapper}>
         <h1 className={styles.title}>ადმინისტრაციული პანელი</h1>
+        <div style={{ textAlign: "right", marginBottom: "20px" }}>
+          <button
+            onClick={handleLogout}
+            className={`${styles.btn} ${styles.deleteBtn}`}
+            style={{ width: "auto" }}
+          >
+            გასვლა
+          </button>
+        </div>
+
         {message.text && (
           <div
             className={
@@ -209,70 +267,31 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
           </div>
         )}
 
+        {/* --- გალერეის სექცია --- */}
         <div className={styles.form}>
           <h2>მთავარი გვერდის გალერეა</h2>
-
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "15px",
-              marginBottom: "20px",
-              padding: "10px",
-              background: "#f8f9fa",
-              borderRadius: "8px",
-            }}
-          >
+          <div className={styles.galleryPreview}>
             {galleryImages.length > 0 ? (
               galleryImages.map((image) => (
-                <div key={image.id} style={{ position: "relative" }}>
-                  <img
-                    src={image.image_url}
-                    alt="Gallery item"
-                    style={{
-                      width: "120px",
-                      height: "80px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
+                <div key={image.id} className={styles.galleryPreviewItem}>
+                  <img src={image.image_url} alt="Gallery item" />
                   <button
                     onClick={() => handleDeleteGalleryImage(image.id)}
-                    style={{
-                      position: "absolute",
-                      top: "5px",
-                      right: "5px",
-                      background: "rgba(231, 76, 60, 0.8)",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "50%",
-                      cursor: "pointer",
-                      width: "24px",
-                      height: "24px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "14px",
-                      lineHeight: "1",
-                    }}
+                    className={styles.galleryDeleteBtn}
                   >
                     &times;
                   </button>
                 </div>
               ))
             ) : (
-              <p>გალერეა ცარიელია. გთხოვთ, ატვირთოთ სურათები.</p>
+              <p>გალერეა ცარიელია.</p>
             )}
           </div>
-
           <div className={styles.input_field}>
-            <label className={styles.day_label}>
-              <span>აირჩიეთ ახალი სურათ(ებ)ი</span>
-            </label>
+            <label>აირჩიეთ ახალი სურათ(ებ)ი</label>
             <input
               id="gallery-file-input"
               type="file"
-              accept="image/png, image/jpeg, image/webp"
               onChange={handleFileChange}
               className={styles.input}
               multiple
@@ -289,22 +308,19 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
             </button>
           </div>
         </div>
+        <hr className={styles.hr} />
 
-        <hr style={{ margin: "40px 0" }} />
-
+        {/* --- განრიგის, აუდიტორიის და ვიდეოების სექცია --- */}
         <form className={styles.form} onSubmit={handleSubmit}>
           <h2>კვირის განრიგი, აუდიტორია და ვიდეოები</h2>
           {schedule.map((day) => (
             <div key={day.id} className={styles.input_field}>
-              <label className={styles.day_label}>
-                <span>{day.day_name}</span>
-              </label>
+              <label>{day.day_name}</label>
               <textarea
                 className={styles.textarea}
                 name="event_description"
                 value={day.event_description || ""}
                 onChange={(e) => handleScheduleChange(e, day.id)}
-                placeholder={`${day.day_name}ს მსახურების აღწერა...`}
               />
               <input
                 type="text"
@@ -313,28 +329,135 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
                 name="event_time"
                 value={day.event_time || ""}
                 onChange={(e) => handleScheduleChange(e, day.id)}
-                placeholder="დრო(ები), მაგ: 10:00, 18:00"
               />
             </div>
           ))}
-          {/* ... Other form fields for auditorium and videos ... */}
+          <div className={styles.input_field}>
+            <label>აუდიტორიის სათაური</label>
+            <input
+              type="text"
+              name="auditoriumTitle"
+              value={otherValues.auditoriumTitle}
+              onChange={handleOtherChange}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.input_field}>
+            <label>აუდიტორიის ტექსტი</label>
+            <textarea
+              name="auditoriumDesc"
+              value={otherValues.auditoriumDesc}
+              onChange={handleOtherChange}
+              className={styles.textarea}
+            ></textarea>
+          </div>
+          {[1, 2, 3].map((num) => (
+            <div key={num}>
+              <div className={styles.input_field}>
+                <label>ვიდეო {num} - Embed ლინკი</label>
+                <input
+                  type="text"
+                  name={`video${num}Link`}
+                  value={otherValues[`video${num}Link`]}
+                  onChange={handleOtherChange}
+                  className={styles.input}
+                />
+              </div>
+              <div className={styles.input_field}>
+                <label>ვიდეო {num} - აღწერა</label>
+                <input
+                  type="text"
+                  name={`video${num}Desc`}
+                  value={otherValues[`video${num}Desc`]}
+                  onChange={handleOtherChange}
+                  className={styles.input}
+                />
+              </div>
+            </div>
+          ))}
           <div className={`${styles.input_field} ${styles.input_btn}`}>
             <input
               type="submit"
-              value="ყველაფრის დამახსოვრება"
+              value="განრიგის, აუდიტორიის და ვიდეოების შენახვა"
               className={styles.btn}
             />
           </div>
         </form>
+        <hr className={styles.hr} />
 
+        {/* --- ქადაგებების სექცია --- */}
         <form className={styles.form} onSubmit={handleSermonSubmit}>
-          {/* Sermon management form */}
+          <h2>
+            {sermonValues.id
+              ? "ქადაგების რედაქტირება"
+              : "ახალი ქადაგების დამატება"}
+          </h2>
+          <div className={styles.input_field}>
+            <label>სათაური</label>
+            <input
+              type="text"
+              name="title_post"
+              value={sermonValues.title_post}
+              onChange={handleSermonChange}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.input_field}>
+            <label>ქადაგების ტექსტი</label>
+            <textarea
+              name="sermon_text"
+              value={sermonValues.sermon_text}
+              onChange={handleSermonChange}
+              className={styles.textarea}
+            ></textarea>
+          </div>
+          <div className={`${styles.input_field} ${styles.input_btn}`}>
+            <input
+              type="submit"
+              value={sermonValues.id ? "განახლება" : "დამატება"}
+              className={styles.btn}
+            />
+            {sermonValues.id && (
+              <button
+                type="button"
+                onClick={() =>
+                  setSermonValues({ id: null, title_post: "", sermon_text: "" })
+                }
+                className={`${styles.btn} ${styles.resetBtn}`}
+              >
+                გასუფთავება
+              </button>
+            )}
+          </div>
         </form>
+
+        <div className={styles.sermonList}>
+          <h3>არსებული ქადაგებები</h3>
+          <ul>
+            {sermons.map((sermon) => (
+              <li key={sermon.id} className={styles.sermonItem}>
+                <span
+                  className={styles.sermonTitle}
+                  onClick={() => handleEditSermon(sermon)}
+                >
+                  {sermon.title_post}
+                </span>
+                <button
+                  onClick={() => handleDeleteSermon(sermon.id)}
+                  className={styles.deleteBtn}
+                >
+                  წაშლა
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
 }
 
+// getServerSideProps რჩება იგივე, რაც ბოლო ვერსიაში გვქონდა
 export async function getServerSideProps() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -347,8 +470,6 @@ export async function getServerSideProps() {
 
     const { data } = result;
 
-    // --- შესწორებული ლოგიკა იწყება აქ ---
-    // ვქმნით სრულ განრიგს, მაშინაც კი თუ ბაზიდან ცარიელი მონაცემი მოდის
     const fullSchedule = ALL_WEEK_DAYS.map((dayName, index) => {
       const dayData = data.scheduleData?.find((d) => d.day_name === dayName);
       return {
@@ -359,7 +480,6 @@ export async function getServerSideProps() {
       };
     });
 
-    // ვქმნით ვიდეოების სრულ სიას
     const fullVideoData = [0, 1, 2].map((index) => {
       const videoItem = data.videoData?.[index];
       return {
@@ -368,7 +488,6 @@ export async function getServerSideProps() {
         desc_txt: videoItem?.desc_txt || "",
       };
     });
-    // --- შესწორებული ლოგიკა მთავრდება აქ ---
 
     const initialValues = {
       scheduleData: fullSchedule,
@@ -382,7 +501,6 @@ export async function getServerSideProps() {
     };
   } catch (error) {
     console.error("Error in Admin getServerSideProps:", error.message);
-    // თუ რაიმე შეცდომა მოხდა, ვაბრუნებთ ცარიელ, მაგრამ ვალიდურ სტრუქტურას
     return {
       props: {
         initialValues: {
@@ -393,11 +511,7 @@ export async function getServerSideProps() {
             event_time: "",
           })),
           auditoriumData: { title: "", desc: "" },
-          videoData: [
-            { id: 1, link_txt: "", desc_txt: "" },
-            { id: 2, link_txt: "", desc_txt: "" },
-            { id: 3, link_txt: "", desc_txt: "" },
-          ],
+          videoData: [{}, {}, {}],
           galleryImages: [],
         },
         initialSermons: [],
