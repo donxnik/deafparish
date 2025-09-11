@@ -117,13 +117,31 @@
 }
 
 /* Slideshow container */
+/* Slideshow container */
 .slideshow {
   position: relative;
   width: 100%;
-  height: 1000px;
-  overflow: hidden;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  max-width: 1200px; /* ვუწესებთ მაქსიმალურ სიგანეს, რომ ძალიან არ გაიწელოს */
+  margin: 40px auto; /* ზედა-ქვედა დაშორება და ავტომატური ცენტრირება */
+  overflow: hidden; /* ეს უცვლელი რჩება */
+
+  /* --- მთავარი ცვლილებები --- */
+  aspect-ratio: 4 / 3; /* ვუყენებთ 16:9 პროპორციას (როგორც YouTube ვიდეო) */
+  height: auto; /* ვაუქმებთ ფიქსირებულ სიმაღლეს */
+
+  /* --- დამატებითი ვიზუალური ეფექტები (სურვილისამებრ) --- */
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ეს კოდი ემატება .slideshow კლასის შემდეგ */
+.slideshow :global(.carousel-root),
+.slideshow :global(.carousel-slider),
+.slideshow :global(.slider-wrapper),
+.slideshow :global(.slider),
+.slideshow :global(.slide) {
+  height: 100%;
+  background-color: #f0f0f0; /* ღია ნაცრისფერი ფონი სლაიდისთვის */
 }
 
 /* Hide images by default */
@@ -1179,6 +1197,8 @@
 
 /* Responsive styles */
 @media (max-width: 700px) {
+  .slideshow {
+  }
   .week_calendar_inner {
     display: flex;
     flex-direction: column;

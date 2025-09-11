@@ -3,20 +3,19 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import auditoriumIMG from "../images/clasroom.jpg";
-import e1 from "../images/e1.jpg";
-import e2 from "../images/e2.jpg";
-import e3 from "../images/e3.jpg";
-import e4 from "../images/e4.jpg";
-import e5 from "../images/e5.jpg";
-import e6 from "../images/e6.jpg";
-import e7 from "../images/e7.jpg";
 import maturityIMG from "../images/maturity.png";
 import iveriaIMG from "../images/iveria.jpg";
 import mapSameba from "../images/map_sameba.jpg";
 import iconByz from "../images/icon_byz.png";
 import calendarIMG from "../images/calendar.png";
 import sazuIMG from "../images/sazu.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+// --- დამატებული იმპორტები ---
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 function formatTextWithRedTime(text) {
   if (!text) return null;
@@ -28,23 +27,25 @@ function formatTextWithRedTime(text) {
   return <span dangerouslySetInnerHTML={{ __html: formattedText }} />;
 }
 
-// თარიღის ფორმატირების ახალი ფუნქცია
 function formatSazuDate(dateString) {
   if (!dateString) return "";
   return dateString.replace(/\//g, ".");
 }
 
 export default function Home({ data = {} }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [expandedDays, setExpandedDays] = useState([]);
-  const images = [e1, e2, e3, e4, e5, e6, e7];
   const {
     scheduleData = [],
     auditoriumData = [],
     videoData = [],
     blogData = [],
     sazuPosts = [],
+    galleryImages = [],
   } = data;
+
+  // --- ლაითბოქსის state-ები ---
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const scheduleMap = scheduleData.reduce((acc, day) => {
     acc[day.day_name] = {
@@ -58,7 +59,7 @@ export default function Home({ data = {} }) {
   const toggleExpand = (dayKey) => {
     setExpandedDays((prev) =>
       prev.includes(dayKey)
-        ? prev.filter((key) => key !== dayKey)
+        ? prev.filter((key) => key !== key)
         : [...prev, dayKey]
     );
   };
@@ -71,13 +72,6 @@ export default function Home({ data = {} }) {
     შაბათი: { name: "შაბათი", key: "wk6" },
     კვირა: { name: "კვირა", key: "wk7" },
   };
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, [images.length]);
-  const goToSlide = (index) => setCurrentSlide(index);
 
   return (
     <>
@@ -192,7 +186,6 @@ export default function Home({ data = {} }) {
             />
           </div>
 
-          {/* --- START: NEWLY ADDED VIDEO SECTION --- */}
           <div className={styles.newVideoSection}>
             <h2 className={styles.newVideoTitle}>საკვირაო ქადაგება.</h2>
             <h3 className={styles.newVideoSubtitle}>07-09-2025</h3>
@@ -207,40 +200,62 @@ export default function Home({ data = {} }) {
               ></iframe>
             </div>
           </div>
-          {/* --- END: NEWLY ADDED VIDEO SECTION --- */}
 
           <div className={styles.slideshow}>
-            {images.map((image, index) => (
-              <div
-                key={index}
-                className={`${styles.slide} ${
-                  index === currentSlide ? styles.active : ""
-                }`}
+            {galleryImages.length > 0 ? (
+              <Carousel
+                autoPlay
+                infiniteLoop
+                showThumbs={false}
+                showStatus={false}
+                interval={5000}
+                transitionTime={800}
               >
-                <div className={styles.slideImageWrapper}>
-                  <Image
-                    src={image}
-                    alt={`header slide ${index + 1}`}
-                    fill={true}
-                    className={styles.centeredImage}
-                    priority={index === 0}
-                    quality={75}
-                  />
-                </div>
+                {galleryImages.map((image, index) => (
+                  <div
+                    key={image.id}
+                    onClick={() => {
+                      setLightboxIndex(index);
+                      setLightboxOpen(true);
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      height: "100%", // <-- ვუთითებთ, რომ მშობლის სიმაღლე დაიკავოს
+                    }}
+                  >
+                    <Image
+                      src={image.image_url}
+                      alt={`გალერეის სურათი ${index + 1}`}
+                      layout="fill"
+                      objectFit="contain"
+                      priority={index === 0}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  background: "#eee",
+                  minHeight: "400px",
+                }}
+              >
+                <p>გალერეა ცარიელია.</p>
               </div>
-            ))}
-            <div className={styles.dotsContainer}>
-              {images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`${styles.dot} ${
-                    index === currentSlide ? styles.active : ""
-                  }`}
-                  onClick={() => goToSlide(index)}
-                ></div>
-              ))}
-            </div>
+            )}
           </div>
+
+          <Lightbox
+            open={lightboxOpen}
+            close={() => setLightboxOpen(false)}
+            slides={galleryImages.map((img) => ({ src: img.image_url }))}
+            index={lightboxIndex}
+          />
 
           <div className={styles.videoContainer}>
             {videoData.map((video, index) => (
@@ -337,12 +352,12 @@ export default function Home({ data = {} }) {
                   {blogData[0].sermon_text.split(" ").length > 100 && (
                     <>
                       {" ... "}
-                      <a
+                      <Link
                         href={`/sermon/${blogData[0].id}`}
                         className={styles.readMore}
                       >
                         კითხვის გაგრძელება
-                      </a>
+                      </Link>
                     </>
                   )}
                 </p>
@@ -350,8 +365,6 @@ export default function Home({ data = {} }) {
             )}
           </div>
 
-          {/* --- აპლიკაციების სექცია --- */}
-          {/* --- დაბრუნებული კალენდრის ბლოკი --- */}
           <div
             className={`${styles.appDownloadContainer} ${styles.calendarApp}`}
           >
@@ -380,7 +393,6 @@ export default function Home({ data = {} }) {
             </a>
           </div>
           <div className={styles.appsWrapper}>
-            {/* --- Sazu Android-ის ბლოკი --- */}
             <div
               className={`${styles.appDownloadContainer} ${styles.androidApp}`}
             >
@@ -409,7 +421,6 @@ export default function Home({ data = {} }) {
               </a>
             </div>
 
-            {/* --- Sazu iOS-ის ბლოკი --- */}
             <div className={`${styles.appDownloadContainer} ${styles.iosApp}`}>
               <a
                 href="https://apps.apple.com/ph/app/sazu-patriarchate/id6504517690"
@@ -562,6 +573,7 @@ export async function getServerSideProps() {
           videoData: mainResult.data?.videoData || [],
           blogData: mainResult.data?.blogData || [],
           sazuPosts: sazuPosts,
+          galleryImages: mainResult.data?.galleryImages || [],
         },
       },
     };
@@ -575,6 +587,7 @@ export async function getServerSideProps() {
           videoData: [],
           blogData: [],
           sazuPosts: [],
+          galleryImages: [],
         },
       },
     };

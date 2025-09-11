@@ -21,28 +21,33 @@ export default async function handler(req, res) {
 
 async function handleGet(req, res) {
   try {
-    // ვიძახებთ ყველა ცხრილის მონაცემს პარალელურად
-    const [scheduleRes, auditoriumRes, videoRes, blogRes] = await Promise.all([
-      supabase
-        .from("schedule_days")
-        .select("id, day_name, event_description, event_time, updated_at")
-        .order("id", { ascending: true }),
-      supabase.from("auditoria_text").select("id, title, desc"),
-      supabase
-        .from("video_section")
-        .select("id, link_txt, desc_txt")
-        .order("id", { ascending: true }),
-      supabase
-        .from("blog_post")
-        .select("id, title_post, sermon_text")
-        .order("id", { ascending: false }),
-    ]);
+    const [scheduleRes, auditoriumRes, videoRes, blogRes, galleryRes] =
+      await Promise.all([
+        supabase
+          .from("schedule_days")
+          .select("id, day_name, event_description, event_time, updated_at")
+          .order("id", { ascending: true }),
+        supabase.from("auditoria_text").select("id, title, desc"),
+        supabase
+          .from("video_section")
+          .select("id, link_txt, desc_txt")
+          .order("id", { ascending: true }),
+        supabase
+          .from("blog_post")
+          .select("id, title_post, sermon_text")
+          .order("id", { ascending: false }),
+        // --- ვიღებთ ყველა სურათს ახალი ცხრილიდან ---
+        supabase
+          .from("homepage_gallery_images")
+          .select("id, image_url")
+          .order("created_at", { ascending: true }),
+      ]);
 
-    // ვამოწმებთ თითოეულ პასუხს შეცდომაზე
     if (scheduleRes.error) throw scheduleRes.error;
     if (auditoriumRes.error) throw auditoriumRes.error;
     if (videoRes.error) throw videoRes.error;
     if (blogRes.error) throw blogRes.error;
+    if (galleryRes.error) throw galleryRes.error;
 
     return res.status(200).json({
       message: "Data retrieved successfully",
@@ -51,6 +56,8 @@ async function handleGet(req, res) {
         auditoriumData: auditoriumRes.data || [],
         videoData: videoRes.data || [],
         blogData: blogRes.data || [],
+        // --- ვაბრუნებთ სურათების მასივს ---
+        galleryImages: galleryRes.data || [],
       },
     });
   } catch (error) {
@@ -64,9 +71,26 @@ async function handlePost(req, res) {
     return res.status(400).json({ error: "Missing request body" });
   }
 
-  const { scheduleData, auditoriumData, videoData, newSermon } = req.body;
+  const {
+    scheduleData,
+    auditoriumData,
+    videoData,
+    newSermon,
+    newGalleryImageUrl,
+  } = req.body;
 
   try {
+    // --- ახალი სურათის დამატება გალერეაში ---
+    if (newGalleryImageUrl) {
+      const { data, error } = await supabase
+        .from("homepage_gallery_images")
+        .insert({ image_url: newGalleryImageUrl })
+        .select()
+        .single();
+      if (error) throw error;
+      return res.status(200).json({ message: "Image added to gallery", data });
+    }
+
     if (scheduleData) {
       const { error } = await supabase
         .from("schedule_days")
@@ -100,7 +124,6 @@ async function handlePost(req, res) {
       }
     }
 
-    // ვამატებთ ახალი ქადაგების ლოგიკას
     if (newSermon) {
       const { data, error } = await supabase
         .from("blog_post")
@@ -108,7 +131,6 @@ async function handlePost(req, res) {
         .select()
         .single();
       if (error) throw error;
-      // ახალი ქადაგების შემთხვევაში ვაბრუნებთ დამატებულ ობიექტს, რომ ფრონტზე დაემატოს
       return res
         .status(200)
         .json({ message: "Sermon added successfully", data });
@@ -148,18 +170,32 @@ async function handlePut(req, res) {
 }
 
 async function handleDelete(req, res) {
-  const { id } = req.body;
-  if (!id) {
-    return res.status(400).json({ error: "Missing sermon ID" });
-  }
+  const { sermonId, galleryImageId } = req.body;
+
   try {
-    const { error } = await supabase.from("blog_post").delete().eq("id", id);
-    if (error) throw error;
-    return res.status(200).json({ message: "Sermon deleted successfully" });
+    // --- გალერეის სურათის წაშლის ლოგიკა ---
+    if (galleryImageId) {
+      const { error } = await supabase
+        .from("homepage_gallery_images")
+        .delete()
+        .eq("id", galleryImageId);
+      if (error) throw error;
+      return res.status(200).json({ message: "Gallery image deleted" });
+    }
+
+    // --- ქადაგების წაშლის ლოგიკა ---
+    if (sermonId) {
+      const { error } = await supabase
+        .from("blog_post")
+        .delete()
+        .eq("id", sermonId);
+      if (error) throw error;
+      return res.status(200).json({ message: "Sermon deleted" });
+    }
+
+    return res.status(400).json({ error: "Missing ID for deletion" });
   } catch (error) {
-    console.error("Error deleting sermon:", error);
-    return res
-      .status(500)
-      .json({ error: `Error deleting sermon: ${error.message}` });
+    console.error("Error deleting item:", error);
+    return res.status(500).json({ error: `Deletion error: ${error.message}` });
   }
 }
