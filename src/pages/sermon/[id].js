@@ -3,8 +3,8 @@ import styles from "@/styles/Home.module.css";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link"; // Add this for navigation links
 
-const supabaseUrl = "https://dhltebqfqcfkzqxbeaju.supabase.co";
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Sermon({ sermon, allSermons }) {
