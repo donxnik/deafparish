@@ -87,3 +87,21 @@
   background-color: #e0e0e0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
+
+/* --- დამატებულია: მობილური ვერსიის გასწორება --- */
+@media (max-width: 768px) {
+  .postContainer {
+    /* ვამცირებთ დაშორებებს გვერდებიდან */
+    padding: 20px;
+    margin: 20px 15px;
+  }
+
+  .postContainer h1 {
+    /* ვამცირებთ სათაურის ზომას */
+    font-size: 24px;
+  }
+
+  .postContainer p {
+    font-size: 16px;
+  }
+}
