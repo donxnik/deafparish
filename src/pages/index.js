@@ -191,7 +191,7 @@ export default function Home({ data = {} }) {
             <h3 className={styles.newVideoSubtitle}>14-09-2025</h3>
             <div className={styles.newVideoWrapper}>
               <iframe
-                src="https://www.youtube.com/embed/MHCGHn05IxA?si=dVq5x7_kQ4lAGRhu"
+                src="https://www.youtube.com/embed/L0bwFKBy680?si=yAuMyIZQPMPkOywv"
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
