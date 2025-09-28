@@ -187,13 +187,11 @@ export default function Home({ data = {} }) {
           </div>
 
           <div className={styles.newVideoSection}>
-            <h2 className={styles.newVideoTitle}>
-              საკვირაო ქადაგება. ღვთისმშობლობა
-            </h2>
-            <h3 className={styles.newVideoSubtitle}>9-21-2025</h3>
+            <h2 className={styles.newVideoTitle}>საკვირაო ქადაგება.</h2>
+            <h3 className={styles.newVideoSubtitle}>28-09-2025</h3>
             <div className={styles.newVideoWrapper}>
               <iframe
-                src="https://www.youtube.com/embed/KdCAZ8tbgD4?si=XwJ1yHqncW4Ma33-"
+                src="https://www.youtube.com/embed/xx0ZdY6w-io?si=MJ92phHMxeg7jhfX"
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
