@@ -376,11 +376,7 @@ export default function Admin({ initialValues = {}, initialSermons = [] }) {
             </div>
           ))}
           <div className={`${styles.input_field} ${styles.input_btn}`}>
-            <input
-              type="submit"
-              value="განრიგის, აუდიტორიის და ვიდეოების შენახვა"
-              className={styles.btn}
-            />
+            <input type="submit" value="შენახვა" className={styles.btn} />
           </div>
         </form>
         <hr className={styles.hr} />
